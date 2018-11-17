@@ -2,64 +2,18 @@
  * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 package java.lang;
 
 import java.lang.annotation.Native;
 
-/**
- * The {@code Integer} class wraps a value of the primitive type
- * {@code int} in an object. An object of type {@code Integer}
- * contains a single field whose type is {@code int}.
- *
- * <p>In addition, this class provides several methods for converting
- * an {@code int} to a {@code String} and a {@code String} to an
- * {@code int}, as well as other constants and methods useful when
- * dealing with an {@code int}.
- *
- * <p>Implementation note: The implementations of the "bit twiddling"
- * methods (such as {@link #highestOneBit(int) highestOneBit} and
- * {@link #numberOfTrailingZeros(int) numberOfTrailingZeros}) are
- * based on material from Henry S. Warren, Jr.'s <i>Hacker's
- * Delight</i>, (Addison Wesley, 2002).
- *
- * @author  Lee Boynton
- * @author  Arthur van Hoff
- * @author  Josh Bloch
- * @author  Joseph D. Darcy
- * @since JDK1.0
- */
+// integer 类继承 Number类型，并实现Comparable
 public final class Integer extends Number implements Comparable<Integer> {
-    /**
-     * A constant holding the minimum value an {@code int} can
-     * have, -2<sup>31</sup>.
-     */
-    @Native public static final int   MIN_VALUE = 0x80000000;
 
-    /**
-     * A constant holding the maximum value an {@code int} can
-     * have, 2<sup>31</sup>-1.
-     */
+    // @Native 表示被注解的内容是原生(本机)相关的。不影响java本身代码逻辑，通常用于生成JNI相关的头文件
+	// 以下两个参数定义了int的最大值和最小值，且采用static的方式，可以通过类名访问
+    @Native public static final int   MIN_VALUE = 0x80000000;
     @Native public static final int   MAX_VALUE = 0x7fffffff;
 
     /**
