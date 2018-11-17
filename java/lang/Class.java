@@ -2,25 +2,6 @@
  * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 package java.lang;
@@ -2305,10 +2286,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     private native java.security.ProtectionDomain getProtectionDomain0();
 
-    /*
-     * Return the Virtual Machine's Class object for the named
-     * primitive type.
-     */
+    // 根据类名，返回JVM中定义的类 的 反射类
     static native Class<?> getPrimitiveClass(String name);
 
     /*

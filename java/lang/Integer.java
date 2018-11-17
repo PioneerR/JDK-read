@@ -16,17 +16,14 @@ public final class Integer extends Number implements Comparable<Integer> {
     @Native public static final int   MIN_VALUE = 0x80000000;
     @Native public static final int   MAX_VALUE = 0x7fffffff;
 
-    /**
-     * The {@code Class} instance representing the primitive type
-     * {@code int}.
-     *
-     * @since   JDK1.1
-     */
+    // SuppressWarnings注解：取消以下静态成员变量(作用域) 的 unchecked 警告
+	// 从JVM中取出int类型的反射类，作为Integer的TYPE
     @SuppressWarnings("unchecked")
     public static final Class<Integer>  TYPE = (Class<Integer>) Class.getPrimitiveClass("int");
 
     /**
-     * All possible chars for representing a number as a String
+     *  TODO 尚未知晓该字符数组的用处
+	 *  All possible chars for representing a number as a String
      */
     final static char[] digits = {
         '0' , '1' , '2' , '3' , '4' , '5' ,
@@ -37,50 +34,7 @@ public final class Integer extends Number implements Comparable<Integer> {
         'u' , 'v' , 'w' , 'x' , 'y' , 'z'
     };
 
-    /**
-     * Returns a string representation of the first argument in the
-     * radix specified by the second argument.
-     *
-     * <p>If the radix is smaller than {@code Character.MIN_RADIX}
-     * or larger than {@code Character.MAX_RADIX}, then the radix
-     * {@code 10} is used instead.
-     *
-     * <p>If the first argument is negative, the first element of the
-     * result is the ASCII minus character {@code '-'}
-     * ({@code '\u005Cu002D'}). If the first argument is not
-     * negative, no sign character appears in the result.
-     *
-     * <p>The remaining characters of the result represent the magnitude
-     * of the first argument. If the magnitude is zero, it is
-     * represented by a single zero character {@code '0'}
-     * ({@code '\u005Cu0030'}); otherwise, the first character of
-     * the representation of the magnitude will not be the zero
-     * character.  The following ASCII characters are used as digits:
-     *
-     * <blockquote>
-     *   {@code 0123456789abcdefghijklmnopqrstuvwxyz}
-     * </blockquote>
-     *
-     * These are {@code '\u005Cu0030'} through
-     * {@code '\u005Cu0039'} and {@code '\u005Cu0061'} through
-     * {@code '\u005Cu007A'}. If {@code radix} is
-     * <var>N</var>, then the first <var>N</var> of these characters
-     * are used as radix-<var>N</var> digits in the order shown. Thus,
-     * the digits for hexadecimal (radix 16) are
-     * {@code 0123456789abcdef}. If uppercase letters are
-     * desired, the {@link java.lang.String#toUpperCase()} method may
-     * be called on the result:
-     *
-     * <blockquote>
-     *  {@code Integer.toString(n, 16).toUpperCase()}
-     * </blockquote>
-     *
-     * @param   i       an integer to be converted to a string.
-     * @param   radix   the radix to use in the string representation.
-     * @return  a string representation of the argument in the specified radix.
-     * @see     java.lang.Character#MAX_RADIX
-     * @see     java.lang.Character#MIN_RADIX
-     */
+   	// TODO 尚未理解
     public static String toString(int i, int radix) {
         if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
             radix = 10;
@@ -111,155 +65,28 @@ public final class Integer extends Number implements Comparable<Integer> {
         return new String(buf, charPos, (33 - charPos));
     }
 
-    /**
-     * Returns a string representation of the first argument as an
-     * unsigned integer value in the radix specified by the second
-     * argument.
-     *
-     * <p>If the radix is smaller than {@code Character.MIN_RADIX}
-     * or larger than {@code Character.MAX_RADIX}, then the radix
-     * {@code 10} is used instead.
-     *
-     * <p>Note that since the first argument is treated as an unsigned
-     * value, no leading sign character is printed.
-     *
-     * <p>If the magnitude is zero, it is represented by a single zero
-     * character {@code '0'} ({@code '\u005Cu0030'}); otherwise,
-     * the first character of the representation of the magnitude will
-     * not be the zero character.
-     *
-     * <p>The behavior of radixes and the characters used as digits
-     * are the same as {@link #toString(int, int) toString}.
-     *
-     * @param   i       an integer to be converted to an unsigned string.
-     * @param   radix   the radix to use in the string representation.
-     * @return  an unsigned string representation of the argument in the specified radix.
-     * @see     #toString(int, int)
-     * @since 1.8
-     */
+	// TODO 尚未理解
     public static String toUnsignedString(int i, int radix) {
         return Long.toUnsignedString(toUnsignedLong(i), radix);
     }
 
-    /**
-     * Returns a string representation of the integer argument as an
-     * unsigned integer in base&nbsp;16.
-     *
-     * <p>The unsigned integer value is the argument plus 2<sup>32</sup>
-     * if the argument is negative; otherwise, it is equal to the
-     * argument.  This value is converted to a string of ASCII digits
-     * in hexadecimal (base&nbsp;16) with no extra leading
-     * {@code 0}s.
-     *
-     * <p>The value of the argument can be recovered from the returned
-     * string {@code s} by calling {@link
-     * Integer#parseUnsignedInt(String, int)
-     * Integer.parseUnsignedInt(s, 16)}.
-     *
-     * <p>If the unsigned magnitude is zero, it is represented by a
-     * single zero character {@code '0'} ({@code '\u005Cu0030'});
-     * otherwise, the first character of the representation of the
-     * unsigned magnitude will not be the zero character. The
-     * following characters are used as hexadecimal digits:
-     *
-     * <blockquote>
-     *  {@code 0123456789abcdef}
-     * </blockquote>
-     *
-     * These are the characters {@code '\u005Cu0030'} through
-     * {@code '\u005Cu0039'} and {@code '\u005Cu0061'} through
-     * {@code '\u005Cu0066'}. If uppercase letters are
-     * desired, the {@link java.lang.String#toUpperCase()} method may
-     * be called on the result:
-     *
-     * <blockquote>
-     *  {@code Integer.toHexString(n).toUpperCase()}
-     * </blockquote>
-     *
-     * @param   i   an integer to be converted to a string.
-     * @return  the string representation of the unsigned integer value
-     *          represented by the argument in hexadecimal (base&nbsp;16).
-     * @see #parseUnsignedInt(String, int)
-     * @see #toUnsignedString(int, int)
-     * @since   JDK1.0.2
-     */
+    // 转换成十六进制的字符串 2^4 = 16
     public static String toHexString(int i) {
         return toUnsignedString0(i, 4);
     }
 
-    /**
-     * Returns a string representation of the integer argument as an
-     * unsigned integer in base&nbsp;8.
-     *
-     * <p>The unsigned integer value is the argument plus 2<sup>32</sup>
-     * if the argument is negative; otherwise, it is equal to the
-     * argument.  This value is converted to a string of ASCII digits
-     * in octal (base&nbsp;8) with no extra leading {@code 0}s.
-     *
-     * <p>The value of the argument can be recovered from the returned
-     * string {@code s} by calling {@link
-     * Integer#parseUnsignedInt(String, int)
-     * Integer.parseUnsignedInt(s, 8)}.
-     *
-     * <p>If the unsigned magnitude is zero, it is represented by a
-     * single zero character {@code '0'} ({@code '\u005Cu0030'});
-     * otherwise, the first character of the representation of the
-     * unsigned magnitude will not be the zero character. The
-     * following characters are used as octal digits:
-     *
-     * <blockquote>
-     * {@code 01234567}
-     * </blockquote>
-     *
-     * These are the characters {@code '\u005Cu0030'} through
-     * {@code '\u005Cu0037'}.
-     *
-     * @param   i   an integer to be converted to a string.
-     * @return  the string representation of the unsigned integer value
-     *          represented by the argument in octal (base&nbsp;8).
-     * @see #parseUnsignedInt(String, int)
-     * @see #toUnsignedString(int, int)
-     * @since   JDK1.0.2
-     */
+	// 转换成八进制的字符串 2^3 = 8
     public static String toOctalString(int i) {
         return toUnsignedString0(i, 3);
     }
 
-    /**
-     * Returns a string representation of the integer argument as an
-     * unsigned integer in base&nbsp;2.
-     *
-     * <p>The unsigned integer value is the argument plus 2<sup>32</sup>
-     * if the argument is negative; otherwise it is equal to the
-     * argument.  This value is converted to a string of ASCII digits
-     * in binary (base&nbsp;2) with no extra leading {@code 0}s.
-     *
-     * <p>The value of the argument can be recovered from the returned
-     * string {@code s} by calling {@link
-     * Integer#parseUnsignedInt(String, int)
-     * Integer.parseUnsignedInt(s, 2)}.
-     *
-     * <p>If the unsigned magnitude is zero, it is represented by a
-     * single zero character {@code '0'} ({@code '\u005Cu0030'});
-     * otherwise, the first character of the representation of the
-     * unsigned magnitude will not be the zero character. The
-     * characters {@code '0'} ({@code '\u005Cu0030'}) and {@code
-     * '1'} ({@code '\u005Cu0031'}) are used as binary digits.
-     *
-     * @param   i   an integer to be converted to a string.
-     * @return  the string representation of the unsigned integer value
-     *          represented by the argument in binary (base&nbsp;2).
-     * @see #parseUnsignedInt(String, int)
-     * @see #toUnsignedString(int, int)
-     * @since   JDK1.0.2
-     */
+	// 转换成二进制的字符串 2^1 = 2
     public static String toBinaryString(int i) {
         return toUnsignedString0(i, 1);
     }
 
-    /**
-     * Convert the integer to an unsigned number.
-     */
+	// 以下方法用于转换成对应进制的字符串
+	// shift 是进制数而不是进制，比如转换成十六进制的字符串时，进制数是4，2^4 = 16
     private static String toUnsignedString0(int val, int shift) {
         // assert shift > 0 && shift <=5 : "Illegal shift value";
         int mag = Integer.SIZE - Integer.numberOfLeadingZeros(val);
@@ -1268,20 +1095,11 @@ public final class Integer extends Number implements Comparable<Integer> {
 
     // Bit twiddling
 
-    /**
-     * The number of bits used to represent an {@code int} value in two's
-     * complement binary form.
-     *
-     * @since 1.5
-     */
+    // 用来以二进制补码形式表示int的比特位数
+	// int 的最大值 2^(32-1)-1
     @Native public static final int SIZE = 32;
 
-    /**
-     * The number of bytes used to represent a {@code int} value in two's
-     * complement binary form.
-     *
-     * @since 1.8
-     */
+
     public static final int BYTES = SIZE / Byte.SIZE;
 
     /**
