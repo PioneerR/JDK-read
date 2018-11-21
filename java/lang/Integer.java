@@ -23,10 +23,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 	@SuppressWarnings("unchecked")
 	public static final Class<Integer> TYPE = (Class<Integer>) Class.getPrimitiveClass("int");
 
-	/**
-	 * TODO 尚未知晓该字符数组的用处
-	 * All possible chars for representing a number as a String
-	 */
+	// 获取int的字符，比如 1 的字符为 digit[1] = '1'
 	final static char[] digits = {
 			'0', '1', '2', '3', '4', '5',
 			'6', '7', '8', '9', 'a', 'b',
@@ -182,6 +179,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 		}
 
 		// 2、i>=65535时，每次取数字i的的最后两位转为字符，存放到字符数组中
+        // 该代码段使用除法和移位的算法
 		while (i >= 65536) {
 			q = i / 100;
 			// really: r = i - (q * 100); 改等式表示：r的值等于i的最后两位
@@ -196,12 +194,12 @@ public final class Integer extends Number implements Comparable<Integer> {
 			buf[--charPos] = DigitTens[r];
 		}
 
-		// Fall thru to fast mode for smaller numbers
-		// assert(i <= 65536, i);
+		// 3、当i<65535时，每次取一位转为字符
+        // 该代码段采用乘法与移位的算法，提高计算效率
 		for (; ; ) {
-			q = (i * 52429) >>> (16 + 3);
-			r = i - ((q << 3) + (q << 1));  // r = i-(q*10) ...
-			buf[--charPos] = digits[r];
+			q = (i * 52429) >>> (16 + 3);//约等于 q = i/10;用位运算，效率更高，这里巧妙运用了乘法和移位避免使用除法来提高效率
+			r = i - ((q << 3) + (q << 1));// r = i-(q*10) ...
+			buf[--charPos] = digits[r];//将数字i的最后一位存入字符数组
 			i = q;
 			if (i == 0) break;
 		}
