@@ -559,8 +559,10 @@ public final class Integer extends Number implements Comparable<Integer> {
 		}
 	}
 
+	/* ------------------------------ Integer基础参数与构造函数 ----------------------------*/
 
 	private final int value;
+
 	// Integer的构造函数- 参数int
 	public Integer(int value) {
 		this.value = value;
@@ -572,6 +574,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 	}
 
 	/* ------------------------- 以下重写Number的方法，获取对应类型的值 ---------------------*/
+
 	// 获取byte类型的值
 	public byte byteValue() {
 		return (byte) value;
@@ -600,6 +603,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 	public double doubleValue() {
 		return (double) value;
 	}
+
 
 	// 获取当前对象内部value的哈希值
 	@Override
