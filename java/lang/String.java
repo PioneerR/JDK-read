@@ -107,64 +107,33 @@ import java.util.regex.PatternSyntaxException;
  * @see java.nio.charset.Charset
  * @since JDK1.0
  */
-
 public final class String implements java.io.Serializable, Comparable<String>, CharSequence {
-	/**
-	 * The value is used for character storage.
-	 */
+
+	// 内部封装一个 字符数组
+	// 当使用String str = "abc"时，本质上，"abc"是存储在一个char类型的数组中
 	private final char value[];
 
-	/**
-	 * Cache the hash code for the string
-	 */
-	private int hash; // Default to 0
+	// 哈希值缓存，默认为0
+	private int hash;
 
-	/**
-	 * use serialVersionUID from JDK 1.0.2 for interoperability
-	 */
+	// 序列化UID
 	private static final long serialVersionUID = -6849794470754667710L;
 
-	/**
-	 * Class String is special cased within the Serialization Stream Protocol.
-	 * <p>
-	 * A String instance is written into an ObjectOutputStream according to
-	 * <a href="{@docRoot}/../platform/serialization/spec/output.html">
-	 * Object Serialization Specification, Section 6.2, "Stream Elements"</a>
-	 */
-	private static final ObjectStreamField[] serialPersistentFields =
-			new ObjectStreamField[0];
+	// TODO 尚未理解
+	private static final ObjectStreamField[] serialPersistentFields = new ObjectStreamField[0];
 
-	/**
-	 * Initializes a newly created {@code String} object so that it represents
-	 * an empty character sequence.  Note that use of this constructor is
-	 * unnecessary since Strings are immutable.
-	 */
+	/*----------------------------------------- String构造函数 --------------------------------------------*/
+
 	public String() {
 		this.value = new char[0];
 	}
 
-	/**
-	 * Initializes a newly created {@code String} object so that it represents
-	 * the same sequence of characters as the argument; in other words, the
-	 * newly created string is a copy of the argument string. Unless an
-	 * explicit copy of {@code original} is needed, use of this constructor is
-	 * unnecessary since Strings are immutable.
-	 *
-	 * @param original A {@code String}
-	 */
 	public String(String original) {
 		this.value = original.value;
 		this.hash = original.hash;
 	}
 
-	/**
-	 * Allocates a new {@code String} so that it represents the sequence of
-	 * characters currently contained in the character array argument. The
-	 * contents of the character array are copied; subsequent modification of
-	 * the character array does not affect the newly created string.
-	 *
-	 * @param value The initial value of the string
-	 */
+	// TODO 为什么底层调用Arrays.copyOf()，将字符数组 复制给 String对象?
 	public String(char value[]) {
 		this.value = Arrays.copyOf(value, value.length);
 	}
@@ -183,6 +152,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 	 * @throws IndexOutOfBoundsException If the {@code offset} and {@code count} arguments index
 	 *                                   characters outside the bounds of the {@code value} array
 	 */
+	// offset：偏移量
 	public String(char value[], int offset, int count) {
 		if (offset < 0) {
 			throw new StringIndexOutOfBoundsException(offset);
@@ -365,8 +335,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 	 *                                      characters outside the bounds of the {@code bytes} array
 	 * @since JDK1.1
 	 */
-	public String(byte bytes[], int offset, int length, String charsetName)
-			throws UnsupportedEncodingException {
+	public String(byte bytes[], int offset, int length, String charsetName) throws UnsupportedEncodingException {
 		if (charsetName == null)
 			throw new NullPointerException("charsetName");
 		checkBounds(bytes, offset, length);
