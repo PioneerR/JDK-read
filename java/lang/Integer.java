@@ -13,10 +13,16 @@ public final class Integer extends Number implements Comparable<Integer> {
 
 	// @Native 表示被注解的内容是原生(本机)相关的。不影响java本身代码逻辑，通常用于生成JNI相关的头文件
 	// 以下两个参数定义了int的最大值和最小值，且采用static的方式，可以通过类名访问
+	// 且最大最小值采用十六进制表示
 	@Native
 	public static final int MIN_VALUE = 0x80000000;
 	@Native
 	public static final int MAX_VALUE = 0x7fffffff;
+
+	// Concept：进制表示
+	//			八进制：以0开头，比如：03452612
+	//			十六进制：以0x或0X开头，比如0X12AFD、0x12afd
+	//
 
 	// SuppressWarnings注解：取消以下静态成员变量(作用域) 的 unchecked 警告
 	// 从JVM中取出int类型的反射类，作为Integer的TYPE
@@ -502,6 +508,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 	}
 
 	// 对int类的数据，进行包装--> TODO 装箱的实现是这个方法吗 ?
+	// 先从IntegerCache中取对象，如果取不到，才new一个返回
 	public static Integer valueOf(int i) {
 		if (i >= IntegerCache.low && i <= IntegerCache.high)
 			return IntegerCache.cache[i + (-IntegerCache.low)];
@@ -510,6 +517,13 @@ public final class Integer extends Number implements Comparable<Integer> {
 
 	// 内部类IntegerCache，支持的数据范围 -128 ~ 127
 	// 该内部类存在的意义，减少不必要的内存浪费，提高效率
+	// a、内部类IntegerCache有什么好处 ? 第一次被调用的会一次性加载256个对象，即向数组cache添加256个Integer数据，有什么好处？
+	// 	  好处：减少内存占用
+	// 		Integer a = Integer.parseInt("100");
+	// 		Integer b = Integer.parseInt("100");
+	//		a 与 b访问的是同一个对象，也就是都访问IntegerCache中的cache[100]这个Integer对象
+	//		即 a == b ? 'true':'false'  -----> 结果为true
+	// b、场景：淘宝很多产品的价格，都小于128，所以该内部类很重要
 	private static class IntegerCache {
 		static final int low = -128;
 		static final int high;
@@ -828,6 +842,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 		return result;
 	}
 
+	// 实现Comparable接口，重写compareTo方法
 	// 比较两个数的大小，返回值为-1，0，1，底层调用compare方法
 	public int compareTo(Integer anotherInteger) {
 		return compare(this.value, anotherInteger.value);
