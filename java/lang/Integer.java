@@ -105,34 +105,54 @@ public final class Integer extends Number implements Comparable<Integer> {
 	}
 
 	// 辅助方法（private方法）
+	// 功能：转换成对应进制的字符串
 	// shift 是进制数而不是进制，比如转换成十六进制的字符串时，进制数是4，2^4 = 16
+	// shift：1-二进制，3-八进制，4-十六进制
+	// 进制数shift 与 进制radix 的关系：int radix = 1 << shift;
 	private static String toUnsignedString0(int val, int shift) {
 		// assert shift > 0 && shift <=5 : "Illegal shift value";
+		// Integer.SIZE表示integer的总比特位数32
+		// 32 - numberOfLeadingZeros 表示这个数用二进制数来表示时，实际所用的比特位数
+		// 比如10的二进制数补码为0000 0000 0000 0000 0000 0000 0000 1010，但实际只需要1010就可以表示10，此时实际使用比特位数为4，所以10的 mag = 4
 		int mag = Integer.SIZE - Integer.numberOfLeadingZeros(val);
+		// 确定val转换成字符数组所需要的长度
 		int chars = Math.max(((mag + (shift - 1)) / shift), 1);
 		char[] buf = new char[chars];
-
+		// 将数字转换为字符数据存放在buf中
 		formatUnsignedInt(val, shift, buf, 0, chars);
-
-		// Use special constructor which takes over "buf".
+		// take over接收：String接收buf数组
 		return new String(buf, true);
 	}
 
-
-	// TODO 尚未理解
+	/**
+	 * 将数字转换为字符数据存放在buf中
+	 *
+	 * @param val 输入的数，比如10
+	 * @param shift 进制数1（二进制）| 3（八进制）| 4（十六进制），如果调用的方法是要转成八进制，则shift = 3
+	 * @param buf 数字转化成字符串前，用数组存储数字的字符，数组位数由数字以及转化的进制决定
+	 * @param offset TODO 尚未理解
+	 * @param len 数组buf的长度
+	 */
 	static int formatUnsignedInt(int val, int shift, char[] buf, int offset, int len) {
+		// 字符位置 char-position
 		int charPos = len;
+		// 将进制数shift 转换成 进制radix
+		// GOOD：进制计算常常会用到位运算
 		int radix = 1 << shift;
+		// 掩码mask：掩码的值比进制radix小1
+		// Concept-TODO 掩码是什么概念？
 		int mask = radix - 1;
+		// 循环体：每次计算出数字对应进制的最后一位数据，存放到数组中
+		// 例如：如果想输出10的八进制数12，则以下循环体，第一次计算出'2'，存入buf字符数组的最后一个空位，第二次，存入'1'。
 		do {
 			buf[offset + --charPos] = Integer.digits[val & mask];
-			val >>>= shift;
+			val >>>= shift;//val = shift >>> 1 = shift / 2
 		} while (val != 0 && charPos > 0);
 
 		return charPos;
 	}
 
-	// 个位数上的数字：100以内的数字对10取模的结果
+	// 个位数上的数字：100以内的数字对10取模的结果，digit是数字的意思
 	final static char[] DigitOnes = {
 			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -165,6 +185,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 	// 1、效率可能不高 2、算法麻烦 3、会定义一个巨大的数组
 
 	// Good Method 此方法作用将int数字转换放进一个字符数组
+	// GOOD 字符串 与 字符数组是好朋友，一旦涉及到输出字符串的，中间过程往往使用字符数组作为中间存储
 	// i = min_integer时，方法失败
 	static void getChars(int i, int index, char[] buf) {
 		int q, r;
@@ -179,7 +200,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 		}
 
 		// 2、i>=65535时，每次取数字i的的最后两位转为字符，存放到字符数组中（移位 + 除法）
-        // 该代码段使用除法和移位的算法
+		// 该代码段使用除法和移位的算法
 		while (i >= 65536) {
 			q = i / 100;
 			// really: r = i - (q * 100); 改等式表示：r的值等于i的最后两位
@@ -195,7 +216,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 		}
 
 		// 3、当i<65535时，每次取一位转为字符（移位 + 乘法）
-        // 该代码段采用乘法与移位的算法，提高计算效率
+		// 该代码段采用乘法与移位的算法，提高计算效率
 		for (; ; ) {
 			q = (i * 52429) >>> (16 + 3);//约等于 q = i/10;用位运算，效率更高，这里巧妙运用了乘法和移位避免使用除法来提高效率
 			r = i - ((q << 3) + (q << 1));// r = i-(q*10) ...
@@ -206,7 +227,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 		if (sign != 0) {
 			buf[--charPos] = sign;
 		}
-		// 什么是移位运算？
+		// Concept-什么是移位运算？
 		// a、移位运算针对的是二进制数，即实际进行移位运算的对象是二进制数，在移位运算前，必须将十进制数转化成二进制数
 		// 	  这些进行计算的二进制数，都是补码
 		// b、移位运算有三种：左移，右移，无符号右移
@@ -239,6 +260,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 		//		 	 00 1101 0100
 		// 			---------------
 		//			 01 0000 1001	（265）
+		// TODO 两个很大的int相乘，乘积结果溢出怎么办？
 
 		// 思考1：为什么要在大于等于65536、小于65536这两种情况采用不同的处理方式？
 		// 背景前提：移位运算效率高于乘除法，乘法效率高于除法
@@ -248,21 +270,21 @@ public final class Integer extends Number implements Comparable<Integer> {
 		// q = i / 10;----------------------- q = i / 10		   效率低，但通用
 		// 选取几组移位算术式进行叠加，可以获取你想要的值，比如 (q << 6) + (q << 5) + (q << 2) = q * 100，即如果你想让一个数乘以100，那么用移位运算就可以办到
 		// 选取几组移位算术式进行叠加，在精度允许的情况下，可以获得相同的值，却有不同的效率
-		//
-
-
-
-
 	}
 
-	final static int[] sizeTable = {9, 99, 999, 9999, 99999, 999999, 9999999,
-			99999999, 999999999, Integer.MAX_VALUE};
+	// 一个设计巧妙的int数组，结合下方一个设计巧妙的方法-stringSize方法
+	final static int[] sizeTable = {9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, Integer.MAX_VALUE};
 
-	// Requires positive x
+	// 输入一个数，返回该数是几位数，比如：输入10，返回2，输入100，返回3
 	static int stringSize(int x) {
 		for (int i = 0; ; i++)
 			if (x <= sizeTable[i])
 				return i + 1;
+	}
+
+	// 将字符串转化成数字，默认转化为十进制
+	public static int parseInt(String s) throws NumberFormatException {
+		return parseInt(s, 10);
 	}
 
 	/**
@@ -281,24 +303,20 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * parseInt("Kona", 27) returns 411787
 	 */
 	// 该方法用于将 字符串 转化 为int类型,字符串中的字符不能包含数字以外的字符，否则抛出数字转化异常
-	// radix参数表示字符串的当前的进制数，输出的结果都是10进制数
+	// radix参数 表示字符串的当前的进制数(输入的进制数)，输出的结果都是10进制数
 	// 该方法可能引起JVM的初始化问题
 	public static int parseInt(String s, int radix) throws NumberFormatException {
-		/*
-		 * WARNING: This method may be invoked early during VM initialization
-		 * before IntegerCache is initialized. Care must be taken to not use
-		 * the valueOf method.
-		 */
-
 		if (s == null) {
 			throw new NumberFormatException("null");
 		}
 
+		// Character.MIN_RADIX = 2（最小进制）
 		if (radix < Character.MIN_RADIX) {
 			throw new NumberFormatException("radix " + radix +
 					" less than Character.MIN_RADIX");
 		}
 
+		// Character.MAX_RADIX = 36（最大进制）
 		if (radix > Character.MAX_RADIX) {
 			throw new NumberFormatException("radix " + radix +
 					" greater than Character.MAX_RADIX");
@@ -344,27 +362,6 @@ public final class Integer extends Number implements Comparable<Integer> {
 			throw NumberFormatException.forInputString(s);
 		}
 		return negative ? result : -result;
-	}
-
-	/**
-	 * Parses the string argument as a signed decimal integer. The
-	 * characters in the string must all be decimal digits, except
-	 * that the first character may be an ASCII minus sign {@code '-'}
-	 * ({@code '\u005Cu002D'}) to indicate a negative value or an
-	 * ASCII plus sign {@code '+'} ({@code '\u005Cu002B'}) to
-	 * indicate a positive value. The resulting integer value is
-	 * returned, exactly as if the argument and the radix 10 were
-	 * given as arguments to the {@link #parseInt(java.lang.String,
-	 * int)} method.
-	 *
-	 * @param s a {@code String} containing the {@code int}
-	 * representation to be parsed
-	 * @return the integer value represented by the argument in decimal.
-	 * @throws NumberFormatException if the string does not contain a
-	 *                               parsable integer.
-	 */
-	public static int parseInt(String s) throws NumberFormatException {
-		return parseInt(s, 10);
 	}
 
 	/**
@@ -1065,11 +1062,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 		return (int) (toUnsignedLong(dividend) % toUnsignedLong(divisor));
 	}
 
-
-	// Bit twiddling
-
-	// 用来以二进制补码形式表示int的比特位数
-	// int 的最大值 2^(32-1)-1
+	// 以二进制补码形式表示int的总比特位数，int 的最大值 2^(32-1)-1
 	@Native
 	public static final int SIZE = 32;
 
