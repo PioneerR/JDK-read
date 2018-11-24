@@ -33,6 +33,11 @@ public final class Integer extends Number implements Comparable<Integer> {
 			'u', 'v', 'w', 'x', 'y', 'z'
 	};
 
+	// 获取当前对象的value的字符串，用的比较多
+	public String toString() {
+		return toString(value);
+	}
+
 	// 输出 数字 的字符串，默认输出的进制为10进制数（字符串）
 	public static String toString(int i) {
 		if (i == Integer.MIN_VALUE)
@@ -108,7 +113,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 	// 功能：转换成对应进制的字符串
 	// shift 是进制数而不是进制，比如转换成十六进制的字符串时，进制数是4，2^4 = 16
 	// shift：1-二进制，3-八进制，4-十六进制
-	// 进制数shift 与 进制radix 的关系：int radix = 1 << shift;
+		// 进制数shift 与 进制radix 的关系：int radix = 1 << shift = 2^shift;
 	private static String toUnsignedString0(int val, int shift) {
 		// assert shift > 0 && shift <=5 : "Illegal shift value";
 		// Integer.SIZE表示integer的总比特位数32
@@ -125,7 +130,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 	}
 
 	/**
-	 * 将数字转换为字符数据存放在buf中
+	 * 将数字转换为字符数据存放在buf中 - toString()方法的关键
 	 *
 	 * @param val 输入的数，比如10
 	 * @param shift 进制数1（二进制）| 3（八进制）| 4（十六进制），如果调用的方法是要转成八进制，则shift = 3
@@ -137,19 +142,38 @@ public final class Integer extends Number implements Comparable<Integer> {
 		// 字符位置 char-position
 		int charPos = len;
 		// 将进制数shift 转换成 进制radix
-		// GOOD：进制计算常常会用到位运算
+		// GOOD：进制计算常常会用到位运算，注意：这里是1左移 shift位，而非 shift 左移1位
 		int radix = 1 << shift;
 		// 掩码mask：掩码的值比进制radix小1
+		// 掩码的特点：它的二进制数最后全都是1，比如8的掩码7，7的二进制数0000 0111，16的掩码15，15的二进制数0000 1111
 		// Concept-TODO 掩码是什么概念？
 		int mask = radix - 1;
 		// 循环体：每次计算出数字对应进制的最后一位数据，存放到数组中
 		// 例如：如果想输出10的八进制数12，则以下循环体，第一次计算出'2'，存入buf字符数组的最后一个空位，第二次，存入'1'。
 		do {
+			// GOOD：val & mask 相当于 val % (mask+1)，前提是mask是掩码，即最后一部分都是由1组成，如0111
+			// 若val = 10，转8进制时，mask = 7（十进制）= 0111（二进制）
+			// 1010
+			// 0111
+			// -----
+			// 0010 （此处用val&掩码mask，可以获取1010的最低三位010），这样就能获取余数
+			// 因此 val & mask 相当于 val % (mask+1)，上面的案例是 10 & 7 = 10 %（7+1） = 10 % 8
 			buf[offset + --charPos] = Integer.digits[val & mask];
-			val >>>= shift;//val = shift >>> 1 = shift / 2
+			val >>>= shift;//val = val >>> shift
 		} while (val != 0 && charPos > 0);
-
 		return charPos;
+		// Concept：与运算
+		// a、与运算的本质是什么?
+		// 	  与运算的运算规则：两位同时为'1'，结果才为'1'，否则皆为'0'
+		// b、与运算的应用场景?
+		// 	  1、与运算可以用来将一个比特单元清零
+		// 	  2、与运算可以用于取出二进制数中的指定位（例如取X=1010 1101的低四位 则将X&00001111得到0000 1101）
+		//    3、判断奇偶性：任何数与1，结果为1，则该数为奇数。
+		// c、位运算还可以用于加密解密
+
+		// Concept:模
+		// a、什么是模？
+		// b、模的应用有哪些？
 	}
 
 	// 个位数上的数字：100以内的数字对10取模的结果，digit是数字的意思
@@ -323,16 +347,17 @@ public final class Integer extends Number implements Comparable<Integer> {
 		}
 
 		int result = 0;
-		boolean negative = false;
-		int i = 0, len = s.length();
-		int limit = -Integer.MAX_VALUE;
+		boolean negative = false;//是否为负数
+		int i = 0, len = s.length();//设置初始位置和字符串的长度
+		int limit = -Integer.MAX_VALUE;//最值限制
 		int multmin;
 		int digit;
 
 		if (len > 0) {
 			char firstChar = s.charAt(0);
+			// 1、该字符串是带符号的：如果第一个字符的值 比 字符'0' 的值小，做进一步的检查
 			if (firstChar < '0') { // Possible leading "+" or "-"
-				if (firstChar == '-') {
+					if (firstChar == '-') {
 					negative = true;
 					limit = Integer.MIN_VALUE;
 				} else if (firstChar != '+')
@@ -345,6 +370,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 			multmin = limit / radix;
 			while (i < len) {
 				// Accumulating negatively avoids surprises near MAX_VALUE
+				// 获取数字的逻辑：字符-->字符的codePoint(每个字符都有自己的编码值：查询UTF-8或其他编码表)-->对应进制的数
+				// 不同类型的字符存在于底层CharacterData(接口)的不同实现类中
 				digit = Character.digit(s.charAt(i++), radix);
 				if (digit < 0) {
 					throw NumberFormatException.forInputString(s);
@@ -459,72 +486,30 @@ public final class Integer extends Number implements Comparable<Integer> {
 		return parseUnsignedInt(s, 10);
 	}
 
-	/**
-	 * Returns an {@code Integer} object holding the value
-	 * extracted from the specified {@code String} when parsed
-	 * with the radix given by the second argument. The first argument
-	 * is interpreted as representing a signed integer in the radix
-	 * specified by the second argument, exactly as if the arguments
-	 * were given to the {@link #parseInt(java.lang.String, int)}
-	 * method. The result is an {@code Integer} object that
-	 * represents the integer value specified by the string.
-	 *
-	 * <p>In other words, this method returns an {@code Integer}
-	 * object equal to the value of:
-	 *
-	 * <blockquote>
-	 * {@code new Integer(Integer.parseInt(s, radix))}
-	 * </blockquote>
-	 *
-	 * @param s the string to be parsed.
-	 * @param radix the radix to be used in interpreting {@code s}
-	 * @return an {@code Integer} object holding the value
-	 * represented by the string argument in the specified
-	 * radix.
-	 * @throws NumberFormatException if the {@code String}
-	 *                               does not contain a parsable {@code int}.
-	 */
-	public static Integer valueOf(String s, int radix) throws NumberFormatException {
-		return Integer.valueOf(parseInt(s, radix));
-	}
 
-	/**
-	 * Returns an {@code Integer} object holding the
-	 * value of the specified {@code String}. The argument is
-	 * interpreted as representing a signed decimal integer, exactly
-	 * as if the argument were given to the {@link
-	 * #parseInt(java.lang.String)} method. The result is an
-	 * {@code Integer} object that represents the integer value
-	 * specified by the string.
-	 *
-	 * <p>In other words, this method returns an {@code Integer}
-	 * object equal to the value of:
-	 *
-	 * <blockquote>
-	 * {@code new Integer(Integer.parseInt(s))}
-	 * </blockquote>
-	 *
-	 * @param s the string to be parsed.
-	 * @return an {@code Integer} object holding the value
-	 * represented by the string argument.
-	 * @throws NumberFormatException if the string cannot be parsed
-	 *                               as an integer.
-	 */
+	// 返回字符串的数值，默认输入的字符串是十进制，输出结果也是10进制
+	// Compare: Integer.valueOf()的底层实现是Integer.parseInt()
+	// 			Integer.valueOf()  返回值类型为 Integer
+	//			Integer.parseInt() 返回值类型为 int
 	public static Integer valueOf(String s) throws NumberFormatException {
 		return Integer.valueOf(parseInt(s, 10));
 	}
 
-	/**
-	 * Cache to support the object identity semantics of autoboxing for values between
-	 * -128 and 127 (inclusive) as required by JLS.
-	 * <p>
-	 * The cache is initialized on first usage.  The size of the cache
-	 * may be controlled by the {@code -XX:AutoBoxCacheMax=<size>} option.
-	 * During VM initialization, java.lang.Integer.IntegerCache.high property
-	 * may be set and saved in the private system properties in the
-	 * sun.misc.VM class.
-	 */
+	// radix参数 表示字符串的当前的进制数(输入的进制数)，输出的结果都是十进制
+	// 如果想获得其他进制的输出结果，则有Integer.toBinaryString()等
+	public static Integer valueOf(String s, int radix) throws NumberFormatException {
+		return Integer.valueOf(parseInt(s, radix));
+	}
 
+	// 对int类的数据，进行包装--> TODO 装箱的实现是这个方法吗 ?
+	public static Integer valueOf(int i) {
+		if (i >= IntegerCache.low && i <= IntegerCache.high)
+			return IntegerCache.cache[i + (-IntegerCache.low)];
+		return new Integer(i);
+	}
+
+	// 内部类IntegerCache，支持的数据范围 -128 ~ 127
+	// 该内部类存在的意义，减少不必要的内存浪费，提高效率
 	private static class IntegerCache {
 		static final int low = -128;
 		static final int high;
@@ -560,169 +545,62 @@ public final class Integer extends Number implements Comparable<Integer> {
 		}
 	}
 
-	/**
-	 * Returns an {@code Integer} instance representing the specified
-	 * {@code int} value.  If a new {@code Integer} instance is not
-	 * required, this method should generally be used in preference to
-	 * the constructor {@link #Integer(int)}, as this method is likely
-	 * to yield significantly better space and time performance by
-	 * caching frequently requested values.
-	 * <p>
-	 * This method will always cache values in the range -128 to 127,
-	 * inclusive, and may cache other values outside of this range.
-	 *
-	 * @param i an {@code int} value.
-	 * @return an {@code Integer} instance representing {@code i}.
-	 * @since 1.5
-	 */
-	public static Integer valueOf(int i) {
-		if (i >= IntegerCache.low && i <= IntegerCache.high)
-			return IntegerCache.cache[i + (-IntegerCache.low)];
-		return new Integer(i);
-	}
 
-	/**
-	 * The value of the {@code Integer}.
-	 *
-	 * @serial
-	 */
 	private final int value;
-
-	/**
-	 * Constructs a newly allocated {@code Integer} object that
-	 * represents the specified {@code int} value.
-	 *
-	 * @param value the value to be represented by the
-	 * {@code Integer} object.
-	 */
+	// Integer的构造函数- 参数int
 	public Integer(int value) {
 		this.value = value;
 	}
 
-	/**
-	 * Constructs a newly allocated {@code Integer} object that
-	 * represents the {@code int} value indicated by the
-	 * {@code String} parameter. The string is converted to an
-	 * {@code int} value in exactly the manner used by the
-	 * {@code parseInt} method for radix 10.
-	 *
-	 * @param s the {@code String} to be converted to an
-	 * {@code Integer}.
-	 * @throws NumberFormatException if the {@code String} does not
-	 *                               contain a parsable integer.
-	 * @see java.lang.Integer#parseInt(java.lang.String, int)
-	 */
+	// Integer的构造函数 - 参数String
 	public Integer(String s) throws NumberFormatException {
 		this.value = parseInt(s, 10);
 	}
 
-	/**
-	 * Returns the value of this {@code Integer} as a {@code byte}
-	 * after a narrowing primitive conversion.
-	 *
-	 * @jls 5.1.3 Narrowing Primitive Conversions
-	 */
+	/* ------------------------- 以下重写Number的方法，获取对应类型的值 ---------------------*/
+	// 获取byte类型的值
 	public byte byteValue() {
 		return (byte) value;
 	}
 
-	/**
-	 * Returns the value of this {@code Integer} as a {@code short}
-	 * after a narrowing primitive conversion.
-	 *
-	 * @jls 5.1.3 Narrowing Primitive Conversions
-	 */
+	// 获取short类型的值
 	public short shortValue() {
 		return (short) value;
 	}
 
-	/**
-	 * Returns the value of this {@code Integer} as an
-	 * {@code int}.
-	 */
+	// 获取int类型的值
 	public int intValue() {
 		return value;
 	}
 
-	/**
-	 * Returns the value of this {@code Integer} as a {@code long}
-	 * after a widening primitive conversion.
-	 *
-	 * @jls 5.1.2 Widening Primitive Conversions
-	 * @see Integer#toUnsignedLong(int)
-	 */
+	// 获取long类型的值
 	public long longValue() {
 		return (long) value;
 	}
 
-	/**
-	 * Returns the value of this {@code Integer} as a {@code float}
-	 * after a widening primitive conversion.
-	 *
-	 * @jls 5.1.2 Widening Primitive Conversions
-	 */
+	// 获取float类型的值
 	public float floatValue() {
 		return (float) value;
 	}
-
-	/**
-	 * Returns the value of this {@code Integer} as a {@code double}
-	 * after a widening primitive conversion.
-	 *
-	 * @jls 5.1.2 Widening Primitive Conversions
-	 */
+	// 获取double类型的值
 	public double doubleValue() {
 		return (double) value;
 	}
 
-	/**
-	 * Returns a {@code String} object representing this
-	 * {@code Integer}'s value. The value is converted to signed
-	 * decimal representation and returned as a string, exactly as if
-	 * the integer value were given as an argument to the {@link
-	 * java.lang.Integer#toString(int)} method.
-	 *
-	 * @return a string representation of the value of this object in
-	 * base&nbsp;10.
-	 */
-	public String toString() {
-		return toString(value);
-	}
-
-	/**
-	 * Returns a hash code for this {@code Integer}.
-	 *
-	 * @return a hash code value for this object, equal to the
-	 * primitive {@code int} value represented by this
-	 * {@code Integer} object.
-	 */
+	// 获取当前对象内部value的哈希值
 	@Override
 	public int hashCode() {
 		return Integer.hashCode(value);
 	}
 
-	/**
-	 * Returns a hash code for a {@code int} value; compatible with
-	 * {@code Integer.hashCode()}.
-	 *
-	 * @param value the value to hash
-	 * @return a hash code value for a {@code int} value.
-	 * @since 1.8
-	 */
+	// Integer类型的哈希值，就是当前对象内部的value本身
 	public static int hashCode(int value) {
 		return value;
 	}
 
-	/**
-	 * Compares this object to the specified object.  The result is
-	 * {@code true} if and only if the argument is not
-	 * {@code null} and is an {@code Integer} object that
-	 * contains the same {@code int} value as this object.
-	 *
-	 * @param obj the object to compare with.
-	 * @return {@code true} if the objects are the same;
-	 * {@code false} otherwise.
-	 */
+	// Integer类型的equals方法，比较的是当前对象内部value的值是否相等
+	// 应用：对比两个Integer类型的数据是否相等，不用 == ，而是用equals
+	// 如果传入的obj是int类型，会被自动装箱为Integer类型
 	public boolean equals(Object obj) {
 		if (obj instanceof Integer) {
 			return value == ((Integer) obj).intValue();
@@ -950,39 +828,16 @@ public final class Integer extends Number implements Comparable<Integer> {
 		return result;
 	}
 
-	/**
-	 * Compares two {@code Integer} objects numerically.
-	 *
-	 * @param anotherInteger the {@code Integer} to be compared.
-	 * @return the value {@code 0} if this {@code Integer} is
-	 * equal to the argument {@code Integer}; a value less than
-	 * {@code 0} if this {@code Integer} is numerically less
-	 * than the argument {@code Integer}; and a value greater
-	 * than {@code 0} if this {@code Integer} is numerically
-	 * greater than the argument {@code Integer} (signed
-	 * comparison).
-	 * @since 1.2
-	 */
+	// 比较两个数的大小，返回值为-1，0，1，底层调用compare方法
 	public int compareTo(Integer anotherInteger) {
 		return compare(this.value, anotherInteger.value);
 	}
 
-	/**
-	 * Compares two {@code int} values numerically.
-	 * The value returned is identical to what would be returned by:
-	 * <pre>
-	 *    Integer.valueOf(x).compareTo(Integer.valueOf(y))
-	 * </pre>
-	 *
-	 * @param x the first {@code int} to compare
-	 * @param y the second {@code int} to compare
-	 * @return the value {@code 0} if {@code x == y};
-	 * a value less than {@code 0} if {@code x < y}; and
-	 * a value greater than {@code 0} if {@code x > y}
-	 * @since 1.7
-	 */
+	// x > y, 返回值 1   我比你大，返回1
+	// x = y, 返回值 0   我等于你，返回0
+	// x < y, 返回值 -1  我比你小，返回-1
 	public static int compare(int x, int y) {
-		return (x < y) ? -1 : ((x == y) ? 0 : 1);
+		return (x < y) ? -1 : ((x == y) ? 0 : 1);//多层 三目运算符，减少代码量
 	}
 
 	/**
@@ -1316,50 +1171,23 @@ public final class Integer extends Number implements Comparable<Integer> {
 				((i << 24));
 	}
 
-	/**
-	 * Adds two integers together as per the + operator.
-	 *
-	 * @param a the first operand
-	 * @param b the second operand
-	 * @return the sum of {@code a} and {@code b}
-	 * @see java.util.function.BinaryOperator
-	 * @since 1.8
-	 */
+	// 获取两个值的和，不过一般人不这么用，
 	public static int sum(int a, int b) {
 		return a + b;
 	}
 
-	/**
-	 * Returns the greater of two {@code int} values
-	 * as if by calling {@link Math#max(int, int) Math.max}.
-	 *
-	 * @param a the first operand
-	 * @param b the second operand
-	 * @return the greater of {@code a} and {@code b}
-	 * @see java.util.function.BinaryOperator
-	 * @since 1.8
-	 */
+	// 获取两个数的最大值，底层调用Math.max()
 	public static int max(int a, int b) {
 		return Math.max(a, b);
 	}
 
-	/**
-	 * Returns the smaller of two {@code int} values
-	 * as if by calling {@link Math#min(int, int) Math.min}.
-	 *
-	 * @param a the first operand
-	 * @param b the second operand
-	 * @return the smaller of {@code a} and {@code b}
-	 * @see java.util.function.BinaryOperator
-	 * @since 1.8
-	 */
+	// 获取两个数的最小值，底层调用Math.min()
 	public static int min(int a, int b) {
 		return Math.min(a, b);
 	}
 
-	/**
-	 * use serialVersionUID from JDK 1.0.2 for interoperability
-	 */
+	// 序列化ID
+	// TODO 设计JDK的时候，是怎么定义该值的？
 	@Native
 	private static final long serialVersionUID = 1360826667806852920L;
 }
