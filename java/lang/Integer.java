@@ -212,7 +212,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 	};
 
 	// 为什么不设置一个千位数的数组？
-	// 1、效率可能不高 2、算法麻烦 3、会定义一个巨大的数组
+	// 1、会定义一个巨大的数组
 
 	// Good Method 此方法作用将int数字转换放进一个字符数组
 	// GOOD 字符串 与 字符数组是好朋友，一旦涉及到输出字符串的，中间过程往往使用字符数组作为中间存储
