@@ -118,20 +118,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		this.value = Arrays.copyOf(value, value.length);
 	}
 
-	/**
-	 * Allocates a new {@code String} that contains characters from a subarray
-	 * of the character array argument. The {@code offset} argument is the
-	 * index of the first character of the subarray and the {@code count}
-	 * argument specifies the length of the subarray. The contents of the
-	 * subarray are copied; subsequent modification of the character array does
-	 * not affect the newly created string.
-	 *
-	 * @param value Array that is the source of characters
-	 * @param offset The initial offset
-	 * @param count The length
-	 * @throws IndexOutOfBoundsException If the {@code offset} and {@code count} arguments index
-	 *                                   characters outside the bounds of the {@code value} array
-	 */
+	// TODO 尚未理解
 	// offset：偏移量
 	public String(char value[], int offset, int count) {
 		if (offset < 0) {
@@ -147,24 +134,8 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		this.value = Arrays.copyOfRange(value, offset, offset + count);
 	}
 
-	/**
-	 * Allocates a new {@code String} that contains characters from a subarray
-	 * of the <a href="Character.html#unicode">Unicode code point</a> array
-	 * argument.  The {@code offset} argument is the index of the first code
-	 * point of the subarray and the {@code count} argument specifies the
-	 * length of the subarray.  The contents of the subarray are converted to
-	 * {@code char}s; subsequent modification of the {@code int} array does not
-	 * affect the newly created string.
-	 *
-	 * @param codePoints Array that is the source of Unicode code points
-	 * @param offset The initial offset
-	 * @param count The length
-	 * @throws IllegalArgumentException  If any invalid Unicode code point is found in {@code
-	 *                                   codePoints}
-	 * @throws IndexOutOfBoundsException If the {@code offset} and {@code count} arguments index
-	 *                                   characters outside the bounds of the {@code codePoints} array
-	 * @since 1.5
-	 */
+	// TODO 尚未理解
+	// codePoints 指的是Unicode中的值
 	public String(int[] codePoints, int offset, int count) {
 		if (offset < 0) {
 			throw new StringIndexOutOfBoundsException(offset);
@@ -205,33 +176,9 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 	}
 
 	/**
-	 * Allocates a new {@code String} constructed from a subarray of an array
-	 * of 8-bit integer values.
-	 *
-	 * <p> The {@code offset} argument is the index of the first byte of the
-	 * subarray, and the {@code count} argument specifies the length of the
-	 * subarray.
-	 *
-	 * <p> Each {@code byte} in the subarray is converted to a {@code char} as
-	 * specified in the method above.
-	 *
+	 * TODO 尚未理解
 	 * @param ascii The bytes to be converted to characters
 	 * @param hibyte The top 8 bits of each 16-bit Unicode code unit
-	 * @param offset The initial offset
-	 * @param count The length
-	 * @throws IndexOutOfBoundsException If the {@code offset} or {@code count} argument is invalid
-	 * @see #String(byte[], int)
-	 * @see #String(byte[], int, int, java.lang.String)
-	 * @see #String(byte[], int, int, java.nio.charset.Charset)
-	 * @see #String(byte[], int, int)
-	 * @see #String(byte[], java.lang.String)
-	 * @see #String(byte[], java.nio.charset.Charset)
-	 * @see #String(byte[])
-	 * @deprecated This method does not properly convert bytes into characters.
-	 * As of JDK&nbsp;1.1, the preferred way to do this is via the
-	 * {@code String} constructors that take a {@link
-	 * java.nio.charset.Charset}, charset name, or that use the platform's
-	 * default charset.
 	 */
 	@Deprecated
 	public String(byte ascii[], int hibyte, int offset, int count) {
@@ -251,31 +198,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		this.value = value;
 	}
 
-	/**
-	 * Allocates a new {@code String} containing characters constructed from
-	 * an array of 8-bit integer values. Each character <i>c</i>in the
-	 * resulting string is constructed from the corresponding component
-	 * <i>b</i> in the byte array such that:
-	 *
-	 * <blockquote><pre>
-	 *     <b><i>c</i></b> == (char)(((hibyte &amp; 0xff) &lt;&lt; 8)
-	 *                         | (<b><i>b</i></b> &amp; 0xff))
-	 * </pre></blockquote>
-	 *
-	 * @param ascii The bytes to be converted to characters
-	 * @param hibyte The top 8 bits of each 16-bit Unicode code unit
-	 * @see #String(byte[], int, int, java.lang.String)
-	 * @see #String(byte[], int, int, java.nio.charset.Charset)
-	 * @see #String(byte[], int, int)
-	 * @see #String(byte[], java.lang.String)
-	 * @see #String(byte[], java.nio.charset.Charset)
-	 * @see #String(byte[])
-	 * @deprecated This method does not properly convert bytes into
-	 * characters.  As of JDK&nbsp;1.1, the preferred way to do this is via the
-	 * {@code String} constructors that take a {@link
-	 * java.nio.charset.Charset}, charset name, or that use the platform's
-	 * default charset.
-	 */
+	// TODO 尚未理解
 	@Deprecated
 	public String(byte ascii[], int hibyte) {
 		this(ascii, hibyte, 0, ascii.length);
