@@ -175,6 +175,12 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		this.value = v;
 	}
 
+	// TODO 尚未理解
+	@Deprecated
+	public String(byte ascii[], int hibyte) {
+		this(ascii, hibyte, 0, ascii.length);
+	}
+
 	/**
 	 * TODO 尚未理解
 	 * @param ascii The bytes to be converted to characters
@@ -198,16 +204,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		this.value = value;
 	}
 
-	// TODO 尚未理解
-	@Deprecated
-	public String(byte ascii[], int hibyte) {
-		this(ascii, hibyte, 0, ascii.length);
-	}
-
-	/* Common private utility method used to bounds check the byte array
-	 * and requested offset & length values used by the String(byte[],..)
-	 * constructors.
-	 */
+	// private method TODO 用于检测？
 	private static void checkBounds(byte[] bytes, int offset, int length) {
 		if (length < 0)
 			throw new StringIndexOutOfBoundsException(length);
@@ -217,27 +214,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 			throw new StringIndexOutOfBoundsException(offset + length);
 	}
 
-	/**
-	 * Constructs a new {@code String} by decoding the specified subarray of
-	 * bytes using the specified charset.  The length of the new {@code String}
-	 * is a function of the charset, and hence may not be equal to the length
-	 * of the subarray.
-	 *
-	 * <p> The behavior of this constructor when the given bytes are not valid
-	 * in the given charset is unspecified.  The {@link
-	 * java.nio.charset.CharsetDecoder} class should be used when more control
-	 * over the decoding process is required.
-	 *
-	 * @param bytes The bytes to be decoded into characters
-	 * @param offset The index of the first byte to decode
-	 * @param length The number of bytes to decode
-	 * @param charsetName The name of a supported {@linkplain java.nio.charset.Charset
-	 * charset}
-	 * @throws UnsupportedEncodingException If the named charset is not supported
-	 * @throws IndexOutOfBoundsException    If the {@code offset} and {@code length} arguments index
-	 *                                      characters outside the bounds of the {@code bytes} array
-	 * @since JDK1.1
-	 */
+	// TODO 尚未理解
 	public String(byte bytes[], int offset, int length, String charsetName) throws UnsupportedEncodingException {
 		if (charsetName == null)
 			throw new NullPointerException("charsetName");
@@ -245,26 +222,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		this.value = StringCoding.decode(charsetName, bytes, offset, length);
 	}
 
-	/**
-	 * Constructs a new {@code String} by decoding the specified subarray of
-	 * bytes using the specified {@linkplain java.nio.charset.Charset charset}.
-	 * The length of the new {@code String} is a function of the charset, and
-	 * hence may not be equal to the length of the subarray.
-	 *
-	 * <p> This method always replaces malformed-input and unmappable-character
-	 * sequences with this charset's default replacement string.  The {@link
-	 * java.nio.charset.CharsetDecoder} class should be used when more control
-	 * over the decoding process is required.
-	 *
-	 * @param bytes The bytes to be decoded into characters
-	 * @param offset The index of the first byte to decode
-	 * @param length The number of bytes to decode
-	 * @param charset The {@linkplain java.nio.charset.Charset charset} to be used to
-	 * decode the {@code bytes}
-	 * @throws IndexOutOfBoundsException If the {@code offset} and {@code length} arguments index
-	 *                                   characters outside the bounds of the {@code bytes} array
-	 * @since 1.6
-	 */
+	// TODO 尚未理解
 	public String(byte bytes[], int offset, int length, Charset charset) {
 		if (charset == null)
 			throw new NullPointerException("charset");
@@ -272,116 +230,37 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		this.value = StringCoding.decode(charset, bytes, offset, length);
 	}
 
-	/**
-	 * Constructs a new {@code String} by decoding the specified array of bytes
-	 * using the specified {@linkplain java.nio.charset.Charset charset}.  The
-	 * length of the new {@code String} is a function of the charset, and hence
-	 * may not be equal to the length of the byte array.
-	 *
-	 * <p> The behavior of this constructor when the given bytes are not valid
-	 * in the given charset is unspecified.  The {@link
-	 * java.nio.charset.CharsetDecoder} class should be used when more control
-	 * over the decoding process is required.
-	 *
-	 * @param bytes The bytes to be decoded into characters
-	 * @param charsetName The name of a supported {@linkplain java.nio.charset.Charset
-	 * charset}
-	 * @throws UnsupportedEncodingException If the named charset is not supported
-	 * @since JDK1.1
-	 */
+	// TODO 尚未理解
 	public String(byte bytes[], String charsetName)
 			throws UnsupportedEncodingException {
 		this(bytes, 0, bytes.length, charsetName);
 	}
 
-	/**
-	 * Constructs a new {@code String} by decoding the specified array of
-	 * bytes using the specified {@linkplain java.nio.charset.Charset charset}.
-	 * The length of the new {@code String} is a function of the charset, and
-	 * hence may not be equal to the length of the byte array.
-	 *
-	 * <p> This method always replaces malformed-input and unmappable-character
-	 * sequences with this charset's default replacement string.  The {@link
-	 * java.nio.charset.CharsetDecoder} class should be used when more control
-	 * over the decoding process is required.
-	 *
-	 * @param bytes The bytes to be decoded into characters
-	 * @param charset The {@linkplain java.nio.charset.Charset charset} to be used to
-	 * decode the {@code bytes}
-	 * @since 1.6
-	 */
+	// TODO 尚未理解
 	public String(byte bytes[], Charset charset) {
 		this(bytes, 0, bytes.length, charset);
 	}
 
-	/**
-	 * Constructs a new {@code String} by decoding the specified subarray of
-	 * bytes using the platform's default charset.  The length of the new
-	 * {@code String} is a function of the charset, and hence may not be equal
-	 * to the length of the subarray.
-	 *
-	 * <p> The behavior of this constructor when the given bytes are not valid
-	 * in the default charset is unspecified.  The {@link
-	 * java.nio.charset.CharsetDecoder} class should be used when more control
-	 * over the decoding process is required.
-	 *
-	 * @param bytes The bytes to be decoded into characters
-	 * @param offset The index of the first byte to decode
-	 * @param length The number of bytes to decode
-	 * @throws IndexOutOfBoundsException If the {@code offset} and the {@code length} arguments index
-	 *                                   characters outside the bounds of the {@code bytes} array
-	 * @since JDK1.1
-	 */
+	// TODO 尚未理解
 	public String(byte bytes[], int offset, int length) {
 		checkBounds(bytes, offset, length);
 		this.value = StringCoding.decode(bytes, offset, length);
 	}
 
-	/**
-	 * Constructs a new {@code String} by decoding the specified array of bytes
-	 * using the platform's default charset.  The length of the new {@code
-	 * String} is a function of the charset, and hence may not be equal to the
-	 * length of the byte array.
-	 *
-	 * <p> The behavior of this constructor when the given bytes are not valid
-	 * in the default charset is unspecified.  The {@link
-	 * java.nio.charset.CharsetDecoder} class should be used when more control
-	 * over the decoding process is required.
-	 *
-	 * @param bytes The bytes to be decoded into characters
-	 * @since JDK1.1
-	 */
+	// TODO 尚未理解
 	public String(byte bytes[]) {
 		this(bytes, 0, bytes.length);
 	}
 
-	/**
-	 * Allocates a new string that contains the sequence of characters
-	 * currently contained in the string buffer argument. The contents of the
-	 * string buffer are copied; subsequent modification of the string buffer
-	 * does not affect the newly created string.
-	 *
-	 * @param buffer A {@code StringBuffer}
-	 */
+	// 参数为StringBuffer，内部同步
+	// TODO 内部使用同步是为什么？
 	public String(StringBuffer buffer) {
 		synchronized (buffer) {
 			this.value = Arrays.copyOf(buffer.getValue(), buffer.length());
 		}
 	}
 
-	/**
-	 * Allocates a new string that contains the sequence of characters
-	 * currently contained in the string builder argument. The contents of the
-	 * string builder are copied; subsequent modification of the string builder
-	 * does not affect the newly created string.
-	 *
-	 * <p> This constructor is provided to ease migration to {@code
-	 * StringBuilder}. Obtaining a string from a string builder via the {@code
-	 * toString} method is likely to run faster and is generally preferred.
-	 *
-	 * @param builder A {@code StringBuilder}
-	 * @since 1.5
-	 */
+	// 参数为StringBuilder，内部非同步
 	public String(StringBuilder builder) {
 		this.value = Arrays.copyOf(builder.getValue(), builder.length());
 	}

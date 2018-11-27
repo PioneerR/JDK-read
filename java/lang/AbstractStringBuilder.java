@@ -2,25 +2,6 @@
  * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 package java.lang;
@@ -45,47 +26,28 @@ import java.util.Arrays;
  * @since       1.5
  */
 abstract class AbstractStringBuilder implements Appendable, CharSequence {
-    /**
-     * The value is used for character storage.
-     */
+
     char[] value;
 
-    /**
-     * The count is the number of characters used.
-     */
+    // TODO 上一次的数组长度？
     int count;
 
-    /**
-     * This no-arg constructor is necessary for serialization of subclasses.
-     */
-    AbstractStringBuilder() {
-    }
+    // 构造函数：无参
+    AbstractStringBuilder() { }
 
-    /**
-     * Creates an AbstractStringBuilder of the specified capacity.
-     */
+    // 构造函数：可指定内部封装的字符数组容量
     AbstractStringBuilder(int capacity) {
         value = new char[capacity];
     }
 
-    /**
-     * Returns the length (character count).
-     *
-     * @return  the length of the sequence of characters currently
-     *          represented by this object
-     */
+    // TODO 对比下列方法，有什么区别？
+    // 返回StringBuilder的字符长度？
     @Override
     public int length() {
         return count;
     }
 
-    /**
-     * Returns the current capacity. The capacity is the amount of storage
-     * available for newly inserted characters, beyond which an allocation
-     * will occur.
-     *
-     * @return  the current capacity
-     */
+    // 返回当前内部封装字符数组的长度
     public int capacity() {
         return value.length;
     }
