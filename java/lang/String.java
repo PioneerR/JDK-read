@@ -2560,15 +2560,9 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return new Formatter(l).format(format, args).toString();
 	}
 
-	/**
-	 * Returns the string representation of the {@code Object} argument.
-	 *
-	 * @param obj an {@code Object}.
-	 * @return if the argument is {@code null}, then a string equal to
-	 * {@code "null"}; otherwise, the value of
-	 * {@code obj.toString()} is returned.
-	 * @see java.lang.Object#toString()
-	 */
+	// 返回Object的字符串
+	// Integer.valueOf() 返回的是Integer类型
+	// String.valueOf()  返回的是String 类型
 	public static String valueOf(Object obj) {
 		return (obj == null) ? "null" : obj.toString();
 	}

@@ -881,17 +881,7 @@ public final class Class<T> implements java.io.Serializable,
         return (info == null) ?  getInterfaces() : info.getSuperInterfaces();
     }
 
-
-    /**
-     * Returns the {@code Class} representing the component type of an
-     * array.  If this class does not represent an array class this method
-     * returns null.
-     *
-     * @return the {@code Class} representing the component type of this
-     * class if this class is an array
-     * @see     java.lang.reflect.Array
-     * @since JDK1.1
-     */
+    // native method 返回数组中存放对象的反射类
     public native Class<?> getComponentType();
 
 

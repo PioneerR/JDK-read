@@ -2,25 +2,6 @@
  * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 package java.lang;
 
@@ -58,21 +39,16 @@ import sun.reflect.annotation.AnnotationType;
  */
 public final class System {
 
-    /* register the natives via the static initializer.
-     *
-     * VM will invoke the initializeSystemClass method to complete
-     * the initialization for this class separated from clinit.
-     * Note that to use properties set by the VM, see the constraints
-     * described in the initializeSystemClass method.
-     */
+    // native 方法，由其他语言实现该re()gisterNatives方法
+    // TODO System对象估计是单例
     private static native void registerNatives();
+
     static {
         registerNatives();
     }
 
-    /** Don't let anyone instantiate this class */
-    private System() {
-    }
+    // 构造函数：无参、私有
+    private System() {}
 
     /**
      * The "standard" input stream. This stream is already
@@ -490,9 +466,7 @@ public final class System {
      * @exception  NullPointerException if either <code>src</code> or
      *               <code>dest</code> is <code>null</code>.
      */
-    public static native void arraycopy(Object src,  int  srcPos,
-                                        Object dest, int destPos,
-                                        int length);
+    public static native void arraycopy(Object src, int srcPos, Object dest, int destPos, int length);
 
     /**
      * Returns the same hash code for the given object as

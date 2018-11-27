@@ -81,7 +81,7 @@ public final class StringBuilder extends AbstractStringBuilder implements java.i
 	 *
 	 * @param seq the sequence to copy.
 	 */
-	// sequence ：序列，也就是seq
+	// sequence ：seq : 序列
 	public StringBuilder(CharSequence seq) {
 		this(seq.length() + 16);
 		append(seq);

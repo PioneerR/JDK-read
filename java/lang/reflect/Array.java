@@ -2,25 +2,6 @@
  * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 package java.lang.reflect;
@@ -35,43 +16,15 @@ package java.lang.reflect;
  *
  * @author Nakul Saraiya
  */
-public final
-class Array {
+public final class Array {
 
     /**
      * Constructor.  Class Array is not instantiable.
      */
     private Array() {}
 
-    /**
-     * Creates a new array with the specified component type and
-     * length.
-     * Invoking this method is equivalent to creating an array
-     * as follows:
-     * <blockquote>
-     * <pre>
-     * int[] x = {length};
-     * Array.newInstance(componentType, x);
-     * </pre>
-     * </blockquote>
-     *
-     * <p>The number of dimensions of the new array must not
-     * exceed 255.
-     *
-     * @param componentType the {@code Class} object representing the
-     * component type of the new array
-     * @param length the length of the new array
-     * @return the new array
-     * @exception NullPointerException if the specified
-     * {@code componentType} parameter is null
-     * @exception IllegalArgumentException if componentType is {@link
-     * Void#TYPE} or if the number of dimensions of the requested array
-     * instance exceed 255.
-     * @exception NegativeArraySizeException if the specified {@code length}
-     * is negative
-     */
-    public static Object newInstance(Class<?> componentType, int length)
-        throws NegativeArraySizeException {
+    // 输入反射类以及数组长度，创建并返回一个反射类数组
+    public static Object newInstance(Class<?> componentType, int length) throws NegativeArraySizeException {
         return newArray(componentType, length);
     }
 
@@ -470,18 +423,11 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    public static native void setDouble(Object array, int index, double d)
-        throws IllegalArgumentException, ArrayIndexOutOfBoundsException;
+    public static native void setDouble(Object array, int index, double d) throws IllegalArgumentException, ArrayIndexOutOfBoundsException;
 
-    /*
-     * Private
-     */
+    private static native Object newArray(Class<?> componentType, int length) throws NegativeArraySizeException;
 
-    private static native Object newArray(Class<?> componentType, int length)
-        throws NegativeArraySizeException;
-
-    private static native Object multiNewArray(Class<?> componentType,
-        int[] dimensions)
+    private static native Object multiNewArray(Class<?> componentType, int[] dimensions)
         throws IllegalArgumentException, NegativeArraySizeException;
 
 

@@ -73,30 +73,34 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
             ensureCapacityInternal(minimumCapacity);
     }
 
-    /**
-     * This method has the same contract as ensureCapacity, but is
-     * never synchronized.
-     */
+    // 确定当前字符数组是否足够存放新加入的字符串，如果不足，则扩容
     private void ensureCapacityInternal(int minimumCapacity) {
-        // overflow-conscious code
+        // 如果添加新的字符串到当前的字符数组中
+        // minimumCapacity = count + str.length 这里的str是要新加入的字符串
+        // minimumCapacity表示加入新字符串，字符数组至少需要的长度
+        // 如果这个长度超出当前字符数组的长度，那就扩容 expandCapacity()
         if (minimumCapacity - value.length > 0)
             expandCapacity(minimumCapacity);
     }
 
-    /**
-     * This implements the expansion semantics of ensureCapacity with no
-     * size check or synchronization.
-     */
+    // 扩容
+    // 扩容算法 : 当前字符数组长度扩大2倍，再加2(TODO 为什么)
+    //             如果值比至少需要的长度小，那就取至少的长度作为新字符数组的长度
+    //             如果值比至少需要的长度大，那就取扩容后的长度
+    //             如果值比至少需要的长度大，且扩容后的长度溢出，则取integer的最大值
+    //             如果值比至少需要的长度大，先判断至少需要的长度本身是否溢出了，如果溢出，则抛出异常
     void expandCapacity(int minimumCapacity) {
         int newCapacity = value.length * 2 + 2;
         if (newCapacity - minimumCapacity < 0)
-            newCapacity = minimumCapacity;
+            newCapacity = minimumCapacity;//
         if (newCapacity < 0) {
-            if (minimumCapacity < 0) // overflow
-                throw new OutOfMemoryError();
+            // 如果至少需要的字符长度过大，溢出int范围，就抛出异常
+            if (minimumCapacity < 0) throw new OutOfMemoryError();
             newCapacity = Integer.MAX_VALUE;
         }
         value = Arrays.copyOf(value, newCapacity);
+        // 最底层调用的都是native method
+        // 原因：基本数据类型，反射类，基础工具类的实现都是由C语言等其他语言实现的，可能是因为涉及内存
     }
 
     /**
@@ -343,42 +347,14 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
         value[index] = ch;
     }
 
-    /**
-     * Appends the string representation of the {@code Object} argument.
-     * <p>
-     * The overall effect is exactly as if the argument were converted
-     * to a string by the method {@link String#valueOf(Object)},
-     * and the characters of that string were then
-     * {@link #append(String) appended} to this character sequence.
-     *
-     * @param   obj   an {@code Object}.
-     * @return  a reference to this object.
-     */
+    // 内部调用toString()方法，将Object对象的字符串添加到字符数组中
     public AbstractStringBuilder append(Object obj) {
-        return append(String.valueOf(obj));
+        return append(String.valueOf(obj));//调用下方的方法
     }
 
-    /**
-     * Appends the specified string to this character sequence.
-     * <p>
-     * The characters of the {@code String} argument are appended, in
-     * order, increasing the length of this sequence by the length of the
-     * argument. If {@code str} is {@code null}, then the four
-     * characters {@code "null"} are appended.
-     * <p>
-     * Let <i>n</i> be the length of this character sequence just prior to
-     * execution of the {@code append} method. Then the character at
-     * index <i>k</i> in the new character sequence is equal to the character
-     * at index <i>k</i> in the old character sequence, if <i>k</i> is less
-     * than <i>n</i>; otherwise, it is equal to the character at index
-     * <i>k-n</i> in the argument {@code str}.
-     *
-     * @param   str   a string.
-     * @return  a reference to this object.
-     */
+    // 将参数String加入内部封装的字符数组中
     public AbstractStringBuilder append(String str) {
-        if (str == null)
-            return appendNull();
+        if (str == null) return appendNull();
         int len = str.length();
         ensureCapacityInternal(count + len);
         str.getChars(0, len, value, count);
