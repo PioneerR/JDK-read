@@ -2,25 +2,6 @@
  * Copyright (c) 1997, 2014, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 package java.util;
@@ -3155,63 +3136,25 @@ public class Arrays {
             a[i] = val;
     }
 
-    // Cloning
 
-    /**
-     * Copies the specified array, truncating or padding with nulls (if necessary)
-     * so the copy has the specified length.  For all indices that are
-     * valid in both the original array and the copy, the two arrays will
-     * contain identical values.  For any indices that are valid in the
-     * copy but not the original, the copy will contain <tt>null</tt>.
-     * Such indices will exist if and only if the specified length
-     * is greater than that of the original array.
-     * The resulting array is of exactly the same class as the original array.
-     *
-     * @param <T> the class of the objects in the array
-     * @param original the array to be copied
-     * @param newLength the length of the copy to be returned
-     * @return a copy of the original array, truncated or padded with nulls
-     *     to obtain the specified length
-     * @throws NegativeArraySizeException if <tt>newLength</tt> is negative
-     * @throws NullPointerException if <tt>original</tt> is null
-     * @since 1.6
-     */
+    // 输入一个数组，复制后返回，这样对象指向新的索引
+    // 此处采用泛型，需指定新<T>泛型类数组的长度
+    // 因为要复制出泛型类-数组，因此调用下方的方法，该方法的参数使用了反射类
     @SuppressWarnings("unchecked")
     public static <T> T[] copyOf(T[] original, int newLength) {
         return (T[]) copyOf(original, newLength, original.getClass());
     }
 
-    /**
-     * Copies the specified array, truncating or padding with nulls (if necessary)
-     * so the copy has the specified length.  For all indices that are
-     * valid in both the original array and the copy, the two arrays will
-     * contain identical values.  For any indices that are valid in the
-     * copy but not the original, the copy will contain <tt>null</tt>.
-     * Such indices will exist if and only if the specified length
-     * is greater than that of the original array.
-     * The resulting array is of the class <tt>newType</tt>.
-     *
-     * @param <U> the class of the objects in the original array
-     * @param <T> the class of the objects in the returned array
-     * @param original the array to be copied
-     * @param newLength the length of the copy to be returned
-     * @param newType the class of the copy to be returned
-     * @return a copy of the original array, truncated or padded with nulls
-     *     to obtain the specified length
-     * @throws NegativeArraySizeException if <tt>newLength</tt> is negative
-     * @throws NullPointerException if <tt>original</tt> is null
-     * @throws ArrayStoreException if an element copied from
-     *     <tt>original</tt> is not of a runtime type that can be stored in
-     *     an array of class <tt>newType</tt>
-     * @since 1.6
-     */
+    // 输入一个数组，复制后返回，特别的是此处采用 （泛型类 + 反射类）
+    // 底层调用System的arraycopy()方法，该方法为native方法
+    // TODO <T,U> 啥意思？尚未解读完
     public static <T,U> T[] copyOf(U[] original, int newLength, Class<? extends T[]> newType) {
         @SuppressWarnings("unchecked")
-        T[] copy = ((Object)newType == (Object)Object[].class)
-            ? (T[]) new Object[newLength]
-            : (T[]) Array.newInstance(newType.getComponentType(), newLength);
-        System.arraycopy(original, 0, copy, 0,
-                         Math.min(original.length, newLength));
+        // 如果数组的泛型类是反射类，那就直接创建Object对象数组，否则创建具体反射类数组
+        // 通过反射类的newType的getComponentType()方法，返回数组存放对象的反射类，getComponentType()是一个native method
+        T[] copy = ((Object)newType == (Object)Object[].class) ?
+                (T[]) new Object[newLength] : (T[]) Array.newInstance(newType.getComponentType(), newLength);
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
         return copy;
     }
 
