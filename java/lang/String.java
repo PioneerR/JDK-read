@@ -87,6 +87,10 @@ import java.util.regex.PatternSyntaxException;
  * @see java.nio.charset.Charset
  * @since JDK1.0
  */
+// String被final修饰，不可被继承，String的本质：使用char类型的字符数组来保存字符串
+// String的特别之处
+// 			a、无论是sub、concat还是replace操作都不是在原有的字符串上进行的，而是重新生成了一个新的字符串对象
+// 			b、即，对String对象的任何改变都不影响到原对象，相关的任何change操作都会生成新的对象
 public final class String implements java.io.Serializable, Comparable<String>, CharSequence {
 
 	// 内部封装一个 字符数组
@@ -252,71 +256,36 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		this(bytes, 0, bytes.length);
 	}
 
-	// 参数为StringBuffer，内部同步
-	// TODO 内部使用同步是为什么？
+	// 参数为StringBuffer-线程安全，内部同步，为什么？TODO
 	public String(StringBuffer buffer) {
 		synchronized (buffer) {
 			this.value = Arrays.copyOf(buffer.getValue(), buffer.length());
 		}
 	}
 
-	// 参数为StringBuilder，内部非同步
+	// 参数为StringBuilder-线程不安全，内部非同步，为什么？TODO
 	public String(StringBuilder builder) {
 		this.value = Arrays.copyOf(builder.getValue(), builder.length());
 	}
 
-	/*
-	 * Package private constructor which shares value array for speed.
-	 * this constructor is always expected to be called with share==true.
-	 * a separate constructor is needed because we already have a public
-	 * String(char[]) constructor that makes a copy of the given char[].
-	 */
+	// TODO 尚未理解 share参数干嘛的？
 	String(char[] value, boolean share) {
 		// assert share : "unshared not supported";
 		this.value = value;
 	}
 
-	/**
-	 * Returns the length of this string.
-	 * The length is equal to the number of <a href="Character.html#unicode">Unicode
-	 * code units</a> in the string.
-	 *
-	 * @return the length of the sequence of characters represented by this
-	 * object.
-	 */
+	// 返回字符串长度
 	public int length() {
 		return value.length;
 	}
 
-	/**
-	 * Returns {@code true} if, and only if, {@link #length()} is {@code 0}.
-	 *
-	 * @return {@code true} if {@link #length()} is {@code 0}, otherwise
-	 * {@code false}
-	 * @since 1.6
-	 */
+	// 判断字符串是否为空，但并不能判断字符串是否没有字符(都是空格)
 	public boolean isEmpty() {
 		return value.length == 0;
 	}
 
-	/**
-	 * Returns the {@code char} value at the
-	 * specified index. An index ranges from {@code 0} to
-	 * {@code length() - 1}. The first {@code char} value of the sequence
-	 * is at index {@code 0}, the next at index {@code 1},
-	 * and so on, as for array indexing.
-	 *
-	 * <p>If the {@code char} value specified by the index is a
-	 * <a href="Character.html#unicode">surrogate</a>, the surrogate
-	 * value is returned.
-	 *
-	 * @param index the index of the {@code char} value.
-	 * @return the {@code char} value at the specified index of this string.
-	 * The first {@code char} value is at index {@code 0}.
-	 * @throws IndexOutOfBoundsException if the {@code index}
-	 *                                   argument is negative or not less than the length of this
-	 *                                   string.
-	 */
+	// 该方法可以获取字符串特定位置的字符，原因就在于String的本质是字符数组
+	// charAt的命名特别准确，char表示字符数组，at表示在哪个角标index
 	public char charAt(int index) {
 		if ((index < 0) || (index >= value.length)) {
 			throw new StringIndexOutOfBoundsException(index);
@@ -324,28 +293,10 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return value[index];
 	}
 
-	/**
-	 * Returns the character (Unicode code point) at the specified
-	 * index. The index refers to {@code char} values
-	 * (Unicode code units) and ranges from {@code 0} to
-	 * {@link #length()}{@code  - 1}.
-	 *
-	 * <p> If the {@code char} value specified at the given index
-	 * is in the high-surrogate range, the following index is less
-	 * than the length of this {@code String}, and the
-	 * {@code char} value at the following index is in the
-	 * low-surrogate range, then the supplementary code point
-	 * corresponding to this surrogate pair is returned. Otherwise,
-	 * the {@code char} value at the given index is returned.
-	 *
-	 * @param index the index to the {@code char} values
-	 * @return the code point value of the character at the
-	 * {@code index}
-	 * @throws IndexOutOfBoundsException if the {@code index}
-	 *                                   argument is negative or not less than the length of this
-	 *                                   string.
-	 * @since 1.5
-	 */
+	// 在Unicode编码字符集中，一个字符对应一个codePoint(代码点)，但一个代码点可能占两个字符
+	// 一个代码点就当作一个东西，这个东西有可能是字符，有可能是表情
+	// 以下方法就是返回代码点
+	// TODO 以上注释正确吗？先弄清除这些概念 unicode、codepoint、代码点、UTF
 	public int codePointAt(int index) {
 		if ((index < 0) || (index >= value.length)) {
 			throw new StringIndexOutOfBoundsException(index);
@@ -813,11 +764,9 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 	 * @see java.text.Collator#compare(String, String)
 	 * @since 1.2
 	 */
-	public static final Comparator<String> CASE_INSENSITIVE_ORDER
-			= new CaseInsensitiveComparator();
+	public static final Comparator<String> CASE_INSENSITIVE_ORDER = new CaseInsensitiveComparator();
 
-	private static class CaseInsensitiveComparator
-			implements Comparator<String>, java.io.Serializable {
+	private static class CaseInsensitiveComparator implements Comparator<String>, java.io.Serializable {
 		// use serialVersionUID from JDK 1.2.2 for interoperability
 		private static final long serialVersionUID = 8575799808933029326L;
 
