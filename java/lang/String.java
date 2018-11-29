@@ -304,28 +304,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return Character.codePointAtImpl(value, index, value.length);
 	}
 
-	/**
-	 * Returns the character (Unicode code point) before the specified
-	 * index. The index refers to {@code char} values
-	 * (Unicode code units) and ranges from {@code 1} to {@link
-	 * CharSequence#length() length}.
-	 *
-	 * <p> If the {@code char} value at {@code (index - 1)}
-	 * is in the low-surrogate range, {@code (index - 2)} is not
-	 * negative, and the {@code char} value at {@code (index -
-	 * 2)} is in the high-surrogate range, then the
-	 * supplementary code point value of the surrogate pair is
-	 * returned. If the {@code char} value at {@code index -
-	 * 1} is an unpaired low-surrogate or a high-surrogate, the
-	 * surrogate value is returned.
-	 *
-	 * @param index the index following the code point that should be returned
-	 * @return the Unicode code point value before the given index.
-	 * @throws IndexOutOfBoundsException if the {@code index}
-	 *                                   argument is less than 1 or greater than the length
-	 *                                   of this string.
-	 * @since 1.5
-	 */
+	// TODO 尚未理解
 	public int codePointBefore(int index) {
 		int i = index - 1;
 		if ((i < 0) || (i >= value.length)) {
@@ -334,27 +313,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return Character.codePointBeforeImpl(value, index, 0);
 	}
 
-	/**
-	 * Returns the number of Unicode code points in the specified text
-	 * range of this {@code String}. The text range begins at the
-	 * specified {@code beginIndex} and extends to the
-	 * {@code char} at index {@code endIndex - 1}. Thus the
-	 * length (in {@code char}s) of the text range is
-	 * {@code endIndex-beginIndex}. Unpaired surrogates within
-	 * the text range count as one code point each.
-	 *
-	 * @param beginIndex the index to the first {@code char} of
-	 * the text range.
-	 * @param endIndex the index after the last {@code char} of
-	 * the text range.
-	 * @return the number of Unicode code points in the specified text
-	 * range
-	 * @throws IndexOutOfBoundsException if the
-	 *                                   {@code beginIndex} is negative, or {@code endIndex}
-	 *                                   is larger than the length of this {@code String}, or
-	 *                                   {@code beginIndex} is larger than {@code endIndex}.
-	 * @since 1.5
-	 */
+	// TODO 尚未理解
 	public int codePointCount(int beginIndex, int endIndex) {
 		if (beginIndex < 0 || endIndex > value.length || beginIndex > endIndex) {
 			throw new IndexOutOfBoundsException();
@@ -362,26 +321,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return Character.codePointCountImpl(value, beginIndex, endIndex - beginIndex);
 	}
 
-	/**
-	 * Returns the index within this {@code String} that is
-	 * offset from the given {@code index} by
-	 * {@code codePointOffset} code points. Unpaired surrogates
-	 * within the text range given by {@code index} and
-	 * {@code codePointOffset} count as one code point each.
-	 *
-	 * @param index the index to be offset
-	 * @param codePointOffset the offset in code points
-	 * @return the index within this {@code String}
-	 * @throws IndexOutOfBoundsException if {@code index}
-	 *                                   is negative or larger then the length of this
-	 *                                   {@code String}, or if {@code codePointOffset} is positive
-	 *                                   and the substring starting with {@code index} has fewer
-	 *                                   than {@code codePointOffset} code points,
-	 *                                   or if {@code codePointOffset} is negative and the substring
-	 *                                   before {@code index} has fewer than the absolute value
-	 *                                   of {@code codePointOffset} code points.
-	 * @since 1.5
-	 */
+	// TODO 尚未理解
 	public int offsetByCodePoints(int index, int codePointOffset) {
 		if (index < 0 || index > value.length) {
 			throw new IndexOutOfBoundsException();
@@ -390,10 +330,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 				index, codePointOffset);
 	}
 
-	/**
-	 * Copy characters from this string into dst starting at dstBegin.
-	 * This method doesn't perform any range checking.
-	 */
+	// TODO 尚未理解
 	void getChars(char dst[], int dstBegin) {
 		System.arraycopy(value, 0, dst, dstBegin, value.length);
 	}
