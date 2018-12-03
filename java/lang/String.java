@@ -2359,22 +2359,12 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return ((st > 0) || (len < value.length)) ? substring(st, len) : this;
 	}
 
-	/**
-	 * This object (which is already a string!) is itself returned.
-	 *
-	 * @return the string itself.
-	 */
+	// 返回自身的引用，这里很特别，不是返回字符数组的toString()，这里是最根本的toString()
 	public String toString() {
 		return this;
 	}
 
-	/**
-	 * Converts this string to a new character array.
-	 *
-	 * @return a newly allocated character array whose length is the length
-	 * of this string and whose contents are initialized to contain
-	 * the character sequence represented by this string.
-	 */
+	// 返回字符串的字符数组
 	public char[] toCharArray() {
 		// Cannot use Arrays.copyOf because of class initialization order issues
 		char result[] = new char[value.length];
@@ -2508,120 +2498,39 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return new String(data, offset, count);
 	}
 
-	/**
-	 * Equivalent to {@link #valueOf(char[])}.
-	 *
-	 * @param data the character array.
-	 * @return a {@code String} that contains the characters of the
-	 * character array.
-	 */
+	// 传入一个字符数组A，返回一个字符串，底层复制了一个字符数组A1，将A1赋值给字符串内部的字符数组，返回字符串
 	public static String copyValueOf(char data[]) {
 		return new String(data);
 	}
 
-	/**
-	 * Returns the string representation of the {@code boolean} argument.
-	 *
-	 * @param b a {@code boolean}.
-	 * @return if the argument is {@code true}, a string equal to
-	 * {@code "true"} is returned; otherwise, a string equal to
-	 * {@code "false"} is returned.
-	 */
+	// 返回布尔数据类型的字符串
 	public static String valueOf(boolean b) {
 		return b ? "true" : "false";
 	}
 
-	/**
-	 * Returns the string representation of the {@code char}
-	 * argument.
-	 *
-	 * @param c a {@code char}.
-	 * @return a string of length {@code 1} containing
-	 * as its single character the argument {@code c}.
-	 */
+	// 返回字符的字符串，实际上是在底层创建了新的字符数组
 	public static String valueOf(char c) {
 		char data[] = {c};
 		return new String(data, true);
 	}
 
-	/**
-	 * Returns the string representation of the {@code int} argument.
-	 * <p>
-	 * The representation is exactly the one returned by the
-	 * {@code Integer.toString} method of one argument.
-	 *
-	 * @param i an {@code int}.
-	 * @return a string representation of the {@code int} argument.
-	 * @see java.lang.Integer#toString(int, int)
-	 */
+	// 根据数据类型，返回字符串，底层调用包装类的toString()方法
 	public static String valueOf(int i) {
 		return Integer.toString(i);
 	}
 
-	/**
-	 * Returns the string representation of the {@code long} argument.
-	 * <p>
-	 * The representation is exactly the one returned by the
-	 * {@code Long.toString} method of one argument.
-	 *
-	 * @param l a {@code long}.
-	 * @return a string representation of the {@code long} argument.
-	 * @see java.lang.Long#toString(long)
-	 */
 	public static String valueOf(long l) {
 		return Long.toString(l);
 	}
 
-	/**
-	 * Returns the string representation of the {@code float} argument.
-	 * <p>
-	 * The representation is exactly the one returned by the
-	 * {@code Float.toString} method of one argument.
-	 *
-	 * @param f a {@code float}.
-	 * @return a string representation of the {@code float} argument.
-	 * @see java.lang.Float#toString(float)
-	 */
 	public static String valueOf(float f) {
 		return Float.toString(f);
 	}
 
-	/**
-	 * Returns the string representation of the {@code double} argument.
-	 * <p>
-	 * The representation is exactly the one returned by the
-	 * {@code Double.toString} method of one argument.
-	 *
-	 * @param d a {@code double}.
-	 * @return a  string representation of the {@code double} argument.
-	 * @see java.lang.Double#toString(double)
-	 */
 	public static String valueOf(double d) {
 		return Double.toString(d);
 	}
 
-	/**
-	 * Returns a canonical representation for the string object.
-	 * <p>
-	 * A pool of strings, initially empty, is maintained privately by the
-	 * class {@code String}.
-	 * <p>
-	 * When the intern method is invoked, if the pool already contains a
-	 * string equal to this {@code String} object as determined by
-	 * the {@link #equals(Object)} method, then the string from the pool is
-	 * returned. Otherwise, this {@code String} object is added to the
-	 * pool and a reference to this {@code String} object is returned.
-	 * <p>
-	 * It follows that for any two strings {@code s} and {@code t},
-	 * {@code s.intern() == t.intern()} is {@code true}
-	 * if and only if {@code s.equals(t)} is {@code true}.
-	 * <p>
-	 * All literal strings and string-valued constant expressions are
-	 * interned. String literals are defined in section 3.10.5 of the
-	 * <cite>The Java&trade; Language Specification</cite>.
-	 *
-	 * @return a string that has the same contents as this string, but is
-	 * guaranteed to be from a pool of unique strings.
-	 */
+	// native Method ：从String pool中获取该对象的字符串，如果没有，则新建一个字符串添加到常量池中并返回
 	public native String intern();
 }
