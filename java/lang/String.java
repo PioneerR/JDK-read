@@ -122,8 +122,8 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		this.value = Arrays.copyOf(value, value.length);
 	}
 
-	// TODO 尚未理解
-	// offset：偏移量
+	// 传入数组，指定从字符数组的哪个位置开始返回字符串
+	// offset：数组角标，count表示返回的字符串中字符的个数
 	public String(char value[], int offset, int count) {
 		if (offset < 0) {
 			throw new StringIndexOutOfBoundsException(offset);
@@ -138,8 +138,9 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		this.value = Arrays.copyOfRange(value, offset, offset + count);
 	}
 
-	// TODO 尚未理解
-	// codePoints 指的是Unicode中的值
+	// 指定unicode的值数组，指定数组角标，指定返回字符的数量count --> 返回字符串
+	// codePoints 指的是Unicode中的数值
+	// 比如A-->65 B-->66 C-->67 a-->97 b-->98 c-->99
 	public String(int[] codePoints, int offset, int count) {
 		if (offset < 0) {
 			throw new StringIndexOutOfBoundsException(offset);
@@ -2499,6 +2500,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 	}
 
 	// 传入一个字符数组A，返回一个字符串，底层复制了一个字符数组A1，将A1赋值给字符串内部的字符数组，返回字符串
+	// 底层调用Arrays.copyOf方法
 	public static String copyValueOf(char data[]) {
 		return new String(data);
 	}
