@@ -605,24 +605,18 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return len1 - len2;
 	}
 
-	/**
-	 * A Comparator that orders {@code String} objects as by
-	 * {@code compareToIgnoreCase}. This comparator is serializable.
-	 * <p>
-	 * Note that this Comparator does <em>not</em> take locale into account,
-	 * and will result in an unsatisfactory ordering for certain locales.
-	 * The java.text package provides <em>Collators</em> to allow
-	 * locale-sensitive ordering.
-	 *
-	 * @see java.text.Collator#compare(String, String)
-	 * @since 1.2
-	 */
+	// 静态常量也可以是一个对象，类似 public static final int a = 10;
+	// 即常量也可以是一个对象
+	// TODO 该比较器的用途是什么？
 	public static final Comparator<String> CASE_INSENSITIVE_ORDER = new CaseInsensitiveComparator();
 
+	// private 的内部类 - 比较器 - 实现Comparator接口
+	// TODO 内部类为什么用static修饰
 	private static class CaseInsensitiveComparator implements Comparator<String>, java.io.Serializable {
 		// use serialVersionUID from JDK 1.2.2 for interoperability
 		private static final long serialVersionUID = 8575799808933029326L;
 
+		// 重写compare方法
 		public int compare(String s1, String s2) {
 			int n1 = s1.length();
 			int n2 = s2.length();
@@ -630,7 +624,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 			for (int i = 0; i < min; i++) {
 				char c1 = s1.charAt(i);
 				char c2 = s2.charAt(i);
-				if (c1 != c2) {
+				if (c1 != c2) {		// TODO 这里的比较逻辑，没看懂
 					c1 = Character.toUpperCase(c1);
 					c2 = Character.toUpperCase(c2);
 					if (c1 != c2) {
