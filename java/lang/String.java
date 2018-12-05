@@ -492,18 +492,8 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return StringCoding.encode(value, 0, value.length);
 	}
 
-	/**
-	 * Compares this string to the specified object.  The result is {@code
-	 * true} if and only if the argument is not {@code null} and is a {@code
-	 * String} object that represents the same sequence of characters as this
-	 * object.
-	 *
-	 * @param anObject The object to compare this {@code String} against
-	 * @return {@code true} if the given object represents a {@code String}
-	 * equivalent to this string, {@code false} otherwise
-	 * @see #compareTo(String)
-	 * @see #equalsIgnoreCase(String)
-	 */
+	// String的比较方法，先比较地址值，再比较内容
+	// 比较内容时，先比较字符串长度，再从头比较字符
 	public boolean equals(Object anObject) {
 		if (this == anObject) {
 			return true;
@@ -526,18 +516,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return false;
 	}
 
-	/**
-	 * Compares this string to the specified {@code StringBuffer}.  The result
-	 * is {@code true} if and only if this {@code String} represents the same
-	 * sequence of characters as the specified {@code StringBuffer}. This method
-	 * synchronizes on the {@code StringBuffer}.
-	 *
-	 * @param sb The {@code StringBuffer} to compare this {@code String} against
-	 * @return {@code true} if this {@code String} represents the same
-	 * sequence of characters as the specified {@code StringBuffer},
-	 * {@code false} otherwise
-	 * @since 1.4
-	 */
+	// TODO 尚未理解 CharSequence对象
 	public boolean contentEquals(StringBuffer sb) {
 		return contentEquals((CharSequence) sb);
 	}
@@ -598,79 +577,15 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return true;
 	}
 
-	/**
-	 * Compares this {@code String} to another {@code String}, ignoring case
-	 * considerations.  Two strings are considered equal ignoring case if they
-	 * are of the same length and corresponding characters in the two strings
-	 * are equal ignoring case.
-	 *
-	 * <p> Two characters {@code c1} and {@code c2} are considered the same
-	 * ignoring case if at least one of the following is true:
-	 * <ul>
-	 * <li> The two characters are the same (as compared by the
-	 * {@code ==} operator)
-	 * <li> Applying the method {@link
-	 * java.lang.Character#toUpperCase(char)} to each character
-	 * produces the same result
-	 * <li> Applying the method {@link
-	 * java.lang.Character#toLowerCase(char)} to each character
-	 * produces the same result
-	 * </ul>
-	 *
-	 * @param anotherString The {@code String} to compare this {@code String} against
-	 * @return {@code true} if the argument is not {@code null} and it
-	 * represents an equivalent {@code String} ignoring case; {@code
-	 * false} otherwise
-	 * @see #equals(Object)
-	 */
+	// 比较字符串，忽略大小写
 	public boolean equalsIgnoreCase(String anotherString) {
-		return (this == anotherString) ? true
-				: (anotherString != null)
+		return (this == anotherString) ? true : (anotherString != null)
 				&& (anotherString.value.length == value.length)
 				&& regionMatches(true, 0, anotherString, 0, value.length);
 	}
 
-	/**
-	 * Compares two strings lexicographically.
-	 * The comparison is based on the Unicode value of each character in
-	 * the strings. The character sequence represented by this
-	 * {@code String} object is compared lexicographically to the
-	 * character sequence represented by the argument string. The result is
-	 * a negative integer if this {@code String} object
-	 * lexicographically precedes the argument string. The result is a
-	 * positive integer if this {@code String} object lexicographically
-	 * follows the argument string. The result is zero if the strings
-	 * are equal; {@code compareTo} returns {@code 0} exactly when
-	 * the {@link #equals(Object)} method would return {@code true}.
-	 * <p>
-	 * This is the definition of lexicographic ordering. If two strings are
-	 * different, then either they have different characters at some index
-	 * that is a valid index for both strings, or their lengths are different,
-	 * or both. If they have different characters at one or more index
-	 * positions, let <i>k</i> be the smallest such index; then the string
-	 * whose character at position <i>k</i> has the smaller value, as
-	 * determined by using the &lt; operator, lexicographically precedes the
-	 * other string. In this case, {@code compareTo} returns the
-	 * difference of the two character values at position {@code k} in
-	 * the two string -- that is, the value:
-	 * <blockquote><pre>
-	 * this.charAt(k)-anotherString.charAt(k)
-	 * </pre></blockquote>
-	 * If there is no index position at which they differ, then the shorter
-	 * string lexicographically precedes the longer string. In this case,
-	 * {@code compareTo} returns the difference of the lengths of the
-	 * strings -- that is, the value:
-	 * <blockquote><pre>
-	 * this.length()-anotherString.length()
-	 * </pre></blockquote>
-	 *
-	 * @param anotherString the {@code String} to be compared.
-	 * @return the value {@code 0} if the argument string is equal to
-	 * this string; a value less than {@code 0} if this string
-	 * is lexicographically less than the string argument; and a
-	 * value greater than {@code 0} if this string is
-	 * lexicographically greater than the string argument.
-	 */
+	// 比较两个字符串，当字符不同时，返回字符的Unicode值的差值，否则返回长度的差值
+	// 如果两个字符串相同，返回0
 	public int compareTo(String anotherString) {
 		int len1 = value.length;
 		int len2 = anotherString.value.length;
