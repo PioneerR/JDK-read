@@ -787,23 +787,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return true;
 	}
 
-	/**
-	 * Tests if the substring of this string beginning at the
-	 * specified index starts with the specified prefix.
-	 *
-	 * @param prefix the prefix.
-	 * @param toffset where to begin looking in this string.
-	 * @return {@code true} if the character sequence represented by the
-	 * argument is a prefix of the substring of this object starting
-	 * at index {@code toffset}; {@code false} otherwise.
-	 * The result is {@code false} if {@code toffset} is
-	 * negative or greater than the length of this
-	 * {@code String} object; otherwise the result is the same
-	 * as the result of the expression
-	 * <pre>
-	 *          this.substring(toffset).startsWith(prefix)
-	 *          </pre>
-	 */
+	// 指定角标，以角标位置开始之后的字符串，是否是以什么字符串开头
 	public boolean startsWith(String prefix, int toffset) {
 		char ta[] = value;
 		int to = toffset;
@@ -822,19 +806,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return true;
 	}
 
-	/**
-	 * Tests if this string starts with the specified prefix.
-	 *
-	 * @param prefix the prefix.
-	 * @return {@code true} if the character sequence represented by the
-	 * argument is a prefix of the character sequence represented by
-	 * this string; {@code false} otherwise.
-	 * Note also that {@code true} will be returned if the
-	 * argument is an empty string or is equal to this
-	 * {@code String} object as determined by the
-	 * {@link #equals(Object)} method.
-	 * @since 1. 0
-	 */
+	// 是否以什么字符串开头
 	public boolean startsWith(String prefix) {
 		return startsWith(prefix, 0);
 	}
