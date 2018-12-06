@@ -476,18 +476,9 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 		return StringCoding.encode(charset, value, 0, value.length);
 	}
 
-	/**
-	 * Encodes this {@code String} into a sequence of bytes using the
-	 * platform's default charset, storing the result into a new byte array.
-	 *
-	 * <p> The behavior of this method when this string cannot be encoded in
-	 * the default charset is unspecified.  The {@link
-	 * java.nio.charset.CharsetEncoder} class should be used when more control
-	 * over the encoding process is required.
-	 *
-	 * @return The resultant byte array
-	 * @since JDK1.1
-	 */
+	// 返回字符串的byte数组，byte数组就是字节数组，这里的byte是一种数量的数据类型，是用二进制数转化成的十进制数据类型
+	// 例如，"ABCabc",返回的byte[] b = {65,66,67,97,98,99}
+	// 本质：String-->char[]-->int[]-->byte[]（这样就更好理解了）
 	public byte[] getBytes() {
 		return StringCoding.encode(value, 0, value.length);
 	}
