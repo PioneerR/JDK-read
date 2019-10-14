@@ -166,5 +166,7 @@ package java.io;
  * @see java.io.Externalizable
  * @since   JDK1.1
  */
+
+//	该接口没有方法，是一个标记类：当其他类实现该接口后，JVM读取时，会自动实现序列化机制。
 public interface Serializable {
 }
